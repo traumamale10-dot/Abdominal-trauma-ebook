@@ -307,6 +307,12 @@ body.on-danger .nav-btn.sos-btn { display:none; }
 .modal-box { width:min(520px,100%); max-height:100dvh; overflow-y:auto; background:var(--surface-solid); border-radius:26px 26px 0 0; padding:16px 18px calc(22px + env(safe-area-inset-bottom)); border:1px solid var(--line); }
 @media (min-width:600px) { .modal { align-items:center; } .modal-box { border-radius:26px; } }
 .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.ask-box { text-align:center; }
+.ask-ic { font-size:2.6rem; line-height:1; margin:6px 0 8px; }
+.ask-box h2 { margin:0 0 6px; font-size:1.25rem; }
+.ask-box p { margin:0 0 16px; color:var(--ink2); line-height:1.6; }
+.ask-box .btn { width:100%; min-height:56px; font-size:1.05rem; margin-top:8px; }
+.ask-note { font-size:.85rem; color:var(--ink2); margin-top:12px !important; }
 .modal-head b { font-size:1.1rem; font-family:'IBM Plex Sans Thai',sans-serif; }
 .rf-prog { height:6px; background:var(--surface2); border-radius:3px; overflow:hidden; }
 .rf-prog i { display:block; height:100%; background:var(--brand); box-shadow:0 0 10px var(--glow); transition:width .25s; }
@@ -426,7 +432,7 @@ html, body { overflow-x:hidden; }
     <button class="icon-btn" onclick="openDrawer()" aria-label="สารบัญ">☰</button>
     <div class="top-title"><small id="topSmall">คู่มือผู้ป่วยและญาติ</small><span id="topTitle">บาดเจ็บช่องท้อง</span></div>
     <div class="ring" aria-hidden="true"><svg viewBox="0 0 44 44"><circle class="bgc" cx="22" cy="22" r="18"/><circle class="fgc" id="ringFg" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"/></svg><b id="ringTxt">0%</b></div>
-    <button class="icon-btn" onclick="openSettings()" aria-label="ขนาดตัวอักษรและโหมดสี">Aa</button>
+    <button class="icon-btn" onclick="openSettings()" aria-label="ขนาดตัวอักษร โหมดสี และเสียงอ่าน">Aa</button>
   </div>
   <div class="progress"><i id="progBar"></i></div>
 </header>
@@ -472,9 +478,24 @@ html, body { overflow-x:hidden; }
     <div class="sample" id="fontSample">ขนาดปกติ</div>
     <button onclick="changeFont(1)" aria-label="เพิ่มขนาดตัวอักษร">ก+</button>
   </div>
+  <h3 style="margin-top:18px;">เสียงอ่าน</h3>
+  <div class="seg" id="auModeSeg">
+    <button data-m="on" onclick="setAuMode('on')">🔊 เปิดอัตโนมัติ</button>
+    <button data-m="off" onclick="setAuMode('off')">🔇 กดฟังเอง</button>
+  </div>
   <button class="btn btn-ghost" style="width:100%;margin-top:18px;" onclick="closeAll()">เสร็จ</button>
 </section>
 
+<div class="modal" id="auAsk" role="dialog" aria-label="ต้องการฟังเสียงอ่านไหม">
+  <div class="modal-box ask-box">
+    <div class="ask-ic">🎧</div>
+    <h2>ต้องการฟังเสียงอ่านไหม?</h2>
+    <p>ถ้าเปิด แอปจะอ่านให้ฟังเองทุกส่วน<br>และไปส่วนถัดไปให้อัตโนมัติ ไม่ต้องกดทีละส่วน</p>
+    <button class="btn btn-brand" onclick="setAuMode('on', true)">🔊 เปิดเสียงอ่านอัตโนมัติ</button>
+    <button class="btn btn-ghost" onclick="setAuMode('off', true)">อ่านเอง (กดฟังเฉพาะบางส่วนได้)</button>
+    <p class="ask-note">เปลี่ยนได้ภายหลังที่ปุ่ม <b>Aa</b> มุมขวาบน</p>
+  </div>
+</div>
 <div class="modal" id="rfModal" role="dialog" aria-label="เช็กอาการอันตราย">
   <div class="modal-box">
     <div class="modal-head"><b>🚨 เช็กอาการอันตราย</b><button class="icon-btn" onclick="closeRedFlag()" aria-label="ปิด">✕</button></div>
@@ -1013,8 +1034,8 @@ function renderHome() {
       '<li>เปิดเสียงโทรศัพท์ให้ดังพอ แล้วเข้าไปในบทที่ต้องการ</li>' +
       '<li>กดปุ่ม <kbd>🔊</kbd> ที่แถบด้านล่าง เพื่อฟังเสียงอ่านทั้งบท (ปุ่มจะขึ้นเฉพาะบทที่มีเสียง)</li>' +
       '<li>กด <kbd>▶</kbd> / <kbd>⏸</kbd> เพื่อเล่นหรือหยุด เลื่อนแถบเพื่อฟังย้อนหลัง กด <kbd>1x</kbd> เพื่อปรับให้ช้าลงหรือเร็วขึ้น</li>' +
-      '<li>กด <kbd>🔁</kbd> ให้เป็นสีเข้ม ถ้าต้องการให้อ่านบทถัดไปต่ออัตโนมัติ</li>' +
-      '<li><b>ส่วนที่ 4</b> แยกเสียงตามอวัยวะ แตะชื่ออวัยวะที่แพทย์แจ้ง แล้วกด <kbd>🔊 ฟังวิธีดูแล</kbd> ฟังเฉพาะของตัวเอง</li>' +
+      '<li>กด <kbd>🔁</kbd> ให้เป็นสีเข้ม ถ้าต้องการให้อ่านบทถัดไปต่ออัตโนมัติ หรือตั้ง <b>เปิดเสียงอ่านอัตโนมัติ</b> ได้ที่ปุ่ม <kbd>Aa</kbd> มุมขวาบน</li>' +
+      '<li><b>ส่วนที่ 4</b> แยกเสียงตามอวัยวะ แตะชื่ออวัยวะที่แพทย์แจ้ง แล้วกด <kbd>🔊 ฟังวิธีดูแล</kbd> ฟังเฉพาะของตัวเอง (โหมดอัตโนมัติจะหยุดรอที่ส่วนนี้ ฟังเสร็จแล้วกด <kbd>›</kbd> ไปต่อ)</li>' +
       '<li>แตะอวัยวะบนภาพร่างกาย แล้วกด <kbd>🔊</kbd> ในกล่องข้อมูล เพื่อฟังว่าอวัยวะนั้นอยู่ตรงไหน ทำหน้าที่อะไร</li>' +
     '</ol></details>' +
     '<p class="disclaimer">ข้อมูลนี้ใช้ประกอบคำแนะนำของแพทย์และพยาบาล ให้ปฏิบัติตามคำสั่งของแพทย์ผู้รักษาเป็นหลัก<br>ฉุกเฉินโทร <a href="tel:1669">1669</a></p>';
@@ -1187,6 +1208,7 @@ function syncSettings() {
   var t = currentTheme();
   document.querySelectorAll('#themeSeg button').forEach(function (b) { b.classList.toggle('on', b.dataset.t === t); });
   document.getElementById('fontSample').textContent = 'ขนาด' + FONT_NAMES[fontIdx()];
+  document.querySelectorAll('#auModeSeg button').forEach(function (b) { b.classList.toggle('on', b.dataset.m === (AU.mode || 'off')); });
 }
 
 // ══════════════════════════════════════════════════════
@@ -1283,9 +1305,9 @@ function pvCloseMax() { document.getElementById('pv-overlay').classList.remove('
 // ══════════════════════════════════════════════════════
 // เสียงอ่าน (ไฟล์ที่อัดเอง)
 // ══════════════════════════════════════════════════════
-var AU = { el:null, ok:{}, missing:{}, auto:false, rateIdx:1, next:false, seeking:false };
+var AU = { el:null, ok:{}, missing:{}, auto:false, rateIdx:1, next:false, seeking:false, mode:null, asked:false };
 var AU_RATES = [ { v:0.8, t:'0.8x' }, { v:1, t:'1x' }, { v:1.2, t:'1.2x' } ];
-try { AU.auto = localStorage.getItem('abdAuAuto') === '1'; var _r = parseInt(localStorage.getItem('abdAuRate'), 10); if (_r >= 0 && _r < 3) AU.rateIdx = _r; } catch (e) {}
+try { AU.mode = localStorage.getItem('abdAuMode'); AU.auto = localStorage.getItem('abdAuAuto') === '1'; var _r = parseInt(localStorage.getItem('abdAuRate'), 10); if (_r >= 0 && _r < 3) AU.rateIdx = _r; } catch (e) {}
 function auSrc(i) { return ((MEDIA[i] || {}).audio || '').trim(); }
 function auFmt(t) { if (!isFinite(t) || t < 0) t = 0; var m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
 function auProbe(i, cb) {
@@ -1317,8 +1339,18 @@ function auOnChapter() {
   auProbe(i, function (ok) {
     if (cur !== i || !ok) return;
     document.getElementById('auBtn').classList.add('has-audio');
-    if (cont || (wasOpen && AU.auto)) auOpen();
+    if (cont || (wasOpen && AU.auto) || AU.mode === 'on') auOpen();
+    else if (!AU.mode && !AU.asked && !uiOpen()) { AU.asked = true; document.getElementById('auAsk').classList.add('show'); }
   });
+}
+// เลือกโหมดเสียง: on = เปิดเสียงเองทุกส่วน + อ่านต่ออัตโนมัติ, off = กดฟังเอง
+function setAuMode(m, fromAsk) {
+  AU.mode = m; AU.auto = m === 'on';
+  try { localStorage.setItem('abdAuMode', m); localStorage.setItem('abdAuAuto', AU.auto ? '1' : '0'); } catch (e) {}
+  document.getElementById('auAsk').classList.remove('show');
+  if (m === 'on') { if (auSrc(cur) && AU.ok[auSrc(cur)]) auOpen(); }
+  else if (!fromAsk) auClose();
+  auUI(); syncSettings();
 }
 function auOpen() {
   var src = auSrc(cur); if (!src) return;
@@ -1341,7 +1373,7 @@ function auToggleAuto() { AU.auto = !AU.auto; try { localStorage.setItem('abdAuA
   el.addEventListener('play', function () { if (typeof axStop === 'function') axStop(); });
   el.addEventListener('loadedmetadata', function () { document.getElementById('auDur').textContent = auFmt(el.duration); el.playbackRate = AU_RATES[AU.rateIdx].v; });
   el.addEventListener('timeupdate', function () { if (AU.seeking || !el.duration) return; seek.value = Math.round(el.currentTime / el.duration * 1000); document.getElementById('auCur').textContent = auFmt(el.currentTime); });
-  el.addEventListener('ended', function () { auUI(); if (AU.auto && cur < CHAPTERS.length - 1) { AU.next = true; setTimeout(function () { go(cur + 1); }, 700); } });
+  el.addEventListener('ended', function () { auUI(); if (AU.auto && cur < CHAPTERS.length - 1 && cur !== 4) { AU.next = true; setTimeout(function () { go(cur + 1); }, 700); } });
   seek.addEventListener('input', function () { AU.seeking = true; if (el.duration) document.getElementById('auCur').textContent = auFmt(seek.value / 1000 * el.duration); });
   seek.addEventListener('change', function () { if (el.duration) el.currentTime = seek.value / 1000 * el.duration; AU.seeking = false; });
 })();
