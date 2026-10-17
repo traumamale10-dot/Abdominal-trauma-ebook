@@ -167,6 +167,24 @@ details.faq summary::after { content:'+'; position:absolute; right:12px; top:50%
 details.faq[open] summary::after { content:'−'; }
 details.faq div { padding:0 16px 14px; color:var(--ink2); }
 
+/* การดูแลตามอวัยวะ */
+.oc-list { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+details.oc { background:var(--surface); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
+details.oc[open] { border-color:var(--oc); box-shadow:0 0 0 1px var(--oc), var(--shadow); }
+details.oc summary { list-style:none; display:flex; align-items:center; gap:12px; padding:14px 48px 14px 14px; cursor:pointer; position:relative; }
+details.oc summary::-webkit-details-marker { display:none; }
+details.oc summary::after { content:'+'; position:absolute; right:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:1.25rem; font-family:'IBM Plex Sans Thai',sans-serif; }
+details.oc[open] summary::after { content:'−'; }
+.oc-sw { width:14px; height:42px; border-radius:7px; background:var(--oc); flex-shrink:0; box-shadow:0 0 10px var(--oc); }
+.oc-t { line-height:1.35; }
+.oc-t b { display:block; font-size:1.08rem; font-family:'IBM Plex Sans Thai',sans-serif; }
+.oc-t small { color:var(--ink2); font-size:.85rem; }
+.oc-body { padding:0 16px 16px; }
+.oc-body h3 { margin:6px 0 8px; font-size:.98rem; }
+.oc-warn { margin-top:12px; background:var(--danger-bg); border:1px solid var(--danger-glow); border-radius:16px; padding:10px 14px 12px; }
+.oc-warn h3 { color:var(--danger); margin-top:0; }
+button.ax-more { background:var(--brand); color:var(--brand-ink); border:none; border-radius:14px; padding:10px 16px; cursor:pointer; font-size:.95rem; box-shadow:0 6px 18px var(--glow); }
+
 /* ═══════════════ หน้าแรก ═══════════════ */
 .hero { margin:2px 0 18px; }
 .hero-text { text-align:left; }
@@ -578,18 +596,7 @@ const CHAPTERS = [
         'ล้างมือก่อนจับแผลหรือสายต่าง ๆ',
         '<b>ห้ามดึงสายหรือเกาแผล</b>']) + '</div>'; } },
 
-  { title:'กรณีพิเศษ', short:'ตัดม้าม · ทวารเทียม · ผู้ป่วยเด็ก', render:function () { return '' +
-    '<div class="section-block"><h2>หลังผ่าตัดตัดม้าม</h2>' +
-    '<p>ม้ามช่วยต่อสู้เชื้อโรค เมื่อไม่มีม้าม ร่างกายเสี่ยงต่อการติดเชื้อรุนแรงมากขึ้น จึงควร</p>' +
-    ul(['ปรึกษาแพทย์เรื่องวัคซีนที่ควรได้รับ เช่น ป้องกันปอดอักเสบ ไข้กาฬหลังแอ่น และ Hib',
-        '<b>ถ้ามีไข้ ต้องรีบไปโรงพยาบาลทันที</b> ไม่รอดูอาการที่บ้าน',
-        'พกบัตรหรือบันทึกว่าผ่าตัดตัดม้ามไว้ทุกครั้ง']) + '</div>' +
-    '<div class="section-block"><h2>ผู้ป่วยที่มีทวารเทียม (ถุงหน้าท้อง)</h2>' +
-    ul(['พยาบาลจะสอนวิธีเปลี่ยนและดูแลถุง ทั้งผู้ป่วยและญาติ',
-        'สังเกตสีของทวารเทียม ปกติควรเป็น<b>สีชมพูแดง ชุ่มชื้น</b> ถ้าเป็น<b>สีม่วงคล้ำหรือดำ ให้รีบพบแพทย์</b>',
-        'ผิวหนังรอบทวารเทียมต้องสะอาดและแห้ง ถ้าแดงหรือถลอกให้ปรึกษาพยาบาล']) + '</div>' +
-    '<div class="section-block"><h2>ผู้ป่วยเด็ก</h2>' +
-    '<p>เด็กอาจแสดงอาการไม่ชัดเจน ผู้ปกครองควรสังเกตว่าเด็ก<b>ซึมลง ร้องไห้มากผิดปกติ ไม่ยอมกินอาหาร อาเจียน หรือท้องอืดตึงขึ้น</b> แล้วแจ้งพยาบาลทันที</p></div>'; } },
+  { title:'การดูแลตามอวัยวะที่บาดเจ็บ', short:'ตับ · ม้าม · ลำไส้ · ทวารเทียม · ตับอ่อน · ไต · กระเพาะปัสสาวะ', render:renderOrganCare },
 
   { title:'การดูแลตัวเองเมื่อกลับบ้าน', short:'กิจวัตร · อาหาร · แผล · ยา · นัด', render:function () { return '' +
     '<h2>🏠 กิจวัตร</h2>' +
@@ -763,12 +770,17 @@ function axInfo(uid) {
     '<div class="ax-row"><span>📍</span><div><b>ตำแหน่ง</b>' + o.where + (o.back ? ' <em>(มองไม่เห็นจากด้านหน้า)</em>' : '') + '</div></div>' +
     '<div class="ax-row"><span>⚙️</span><div><b>หน้าที่</b>' + ul(o.fn) + '</div></div>' +
     (o.hurt ? '<div class="ax-hurt"><b>เมื่อได้รับบาดเจ็บ</b>' + o.hurt + '</div>' : '') +
-    (o.ch && o.ch !== cur ? '<a class="ax-more" href="#ch' + o.ch + '">อ่านเพิ่มใน ส่วนที่ ' + o.ch + ' ›</a>' : '');
+    (careFor(o.id) ? '<button class="ax-more ax-care" onclick="goCare(\'' + careFor(o.id) + '\')">ดูวิธีดูแลตัวเองหลังบาดเจ็บ ›</button>'
+      : (o.ch && o.ch !== cur ? '<a class="ax-more" href="#ch' + o.ch + '">อ่านเพิ่มใน ส่วนที่ ' + o.ch + ' ›</a>' : ''));
   // ปุ่มเสียงอธิบายอวัยวะ (แสดงเมื่อมีไฟล์)
   var btn = box.querySelector('.ax-say'), src = 'audio/organ-' + o.id + '.mp3';
   axProbe(src, function (ok) { if (ok && btn.isConnected) { btn.style.display = ''; btn.dataset.src = src; } });
 }
 
+function careFor(organId) {
+  var map = { liver:'liver', spleen:'spleen', stomach:'stomach', smallbowel:'stomach', colon:'colon', pancreas:'pancreas', kidney:'kidney', bladder:'bladder' };
+  return map[organId] || null;
+}
 function axPick(uid, id) {
   var st = EXP[uid];
   if (st.sel === id) { st.sel = null; axRender(uid); return; }
@@ -813,6 +825,117 @@ function openRef(key, title) {
 }
 function closeRef() { document.getElementById('refOverlay').classList.remove('show'); }
 function refZoom() { document.getElementById('refOverlay').classList.toggle('zoomed'); }
+
+// ══════════════════════════════════════════════════════
+// การดูแลตนเองตามอวัยวะที่บาดเจ็บ (ส่วนที่ 4)
+// care = ดูแลตัวเองอย่างไร   warn = รีบกลับโรงพยาบาลเมื่อ
+// ══════════════════════════════════════════════════════
+const ORGAN_CARE = [
+  { id:'liver', organ:'liver', icon:'🟤', name:'ตับ', sub:'บาดเจ็บที่ตับ หรือผ่าตัดซ่อมตับ',
+    care:[
+      'งดยกของหนัก ออกกำลังกายหนัก และกีฬาปะทะ จนกว่าแพทย์อนุญาต มักนานหลายสัปดาห์ถึง 2–3 เดือน ตามความรุนแรง',
+      'งดแอลกอฮอล์ ไม่กินยาสมุนไพร อาหารเสริม หรือยาแก้ปวดเกินขนาด โดยไม่ปรึกษาแพทย์ เพราะตับยังฟื้นตัวอยู่',
+      'ไปตามนัดทุกครั้ง บางรายต้องตรวจเลือดหรือตรวจภาพซ้ำ'],
+    warn:[
+      'ปวดท้องขวาบนมากขึ้น หรือปวดร้าวไปที่ไหล่ขวา',
+      'หน้ามืด ใจสั่น ซีด เหงื่อแตก ตัวเย็น',
+      'ตัวเหลือง ตาเหลือง ปัสสาวะสีเข้มคล้ายน้ำชา อุจจาระสีซีด',
+      'มีไข้ หรือท้องอืดตึงมากขึ้น'] },
+  { id:'spleen', organ:'spleen', icon:'🟣', name:'ม้าม', sub:'บาดเจ็บที่ม้าม หรือผ่าตัดเอาม้ามออก',
+    care:[
+      'ช่วง 1–2 สัปดาห์แรกพักให้มาก เดินเบา ๆ ในบ้านได้',
+      'งดยกของหนัก ผลัก ดึง งานบ้านหนัก กีฬา และออกกำลังกายหนัก ประมาณ 2–3 เดือน หรือตามที่แพทย์กำหนด',
+      '<b>ถ้าผ่าตัดเอาม้ามออก</b> ร่างกายจะติดเชื้อรุนแรงง่ายขึ้น ควรรับวัคซีนป้องกันปอดอักเสบ ไข้กาฬหลังแอ่น และ Hib ตามที่แพทย์นัด และฉีดวัคซีนไข้หวัดใหญ่ทุกปี',
+      'บอกแพทย์และทันตแพทย์ทุกครั้งว่าไม่มีม้าม และพกบัตรหรือบันทึกนี้ติดตัว'],
+    warn:[
+      'ปวดท้องซ้ายบนมากขึ้น หรือปวดร้าวไปที่ไหล่ซ้าย',
+      'หน้ามืด เป็นลม ใจเต้นเร็ว ซีด ตัวเย็น',
+      '<b>มีไข้ 38 องศาขึ้นไป หรือหนาวสั่น โดยเฉพาะผู้ที่ไม่มีม้าม ต้องไปโรงพยาบาลทันที</b>'] },
+  { id:'stomach', organ:'stomach', icon:'🩷', name:'กระเพาะอาหาร และลำไส้เล็ก', sub:'ผ่าตัดซ่อม หรือตัดต่อกระเพาะ / ลำไส้เล็ก',
+    care:[
+      'กินทีละน้อย วันละ 5–6 มื้อ เคี้ยวให้ละเอียด เริ่มจากอาหารอ่อนแล้วค่อย ๆ เพิ่ม ตามที่แพทย์สั่ง',
+      'ลุกเดินบ่อย ๆ ช่วยลดท้องอืด และให้ลำไส้กลับมาทำงานเร็วขึ้น',
+      'ไม่ซื้อยาแก้ปวดกลุ่ม NSAIDs มากินเอง เพราะระคายเคืองกระเพาะ งดแอลกอฮอล์และบุหรี่'],
+    warn:[
+      'ท้องอืดมาก ปวดบิด อาเจียน ไม่ผายลม หรือไม่ถ่าย',
+      'มีไข้ ปวดท้องมากขึ้น ท้องแข็ง',
+      'อาเจียนเป็นเลือด หรือถ่ายอุจจาระสีดำ'] },
+  { id:'colon', organ:'colon', icon:'🟠', name:'ลำไส้ใหญ่ และทวารเทียม', sub:'ผ่าตัดลำไส้ใหญ่ บางรายมีถุงหน้าท้อง',
+    care:[
+      'ช่วงแรกกินอาหารอ่อนกากน้อย แล้วค่อย ๆ เพิ่มผักผลไม้ ดื่มน้ำให้พอ ไม่เบ่งถ่ายแรง',
+      '<b>ถ้ามีทวารเทียม</b> เทถุงเมื่อมีของเสียประมาณ 1 ใน 3 ถึงครึ่งถุง เปลี่ยนแป้นและถุงตามที่พยาบาลสอน ตัดรูให้พอดีกับทวารเทียม',
+      'ล้างผิวรอบทวารเทียมด้วยน้ำสะอาด ซับให้แห้ง ปกติทวารเทียมควรเป็นสีชมพูแดง ชุ่มชื้น',
+      'ถ้าของเสียออกเหลวมาก ให้ดื่มน้ำเพิ่ม ระวังร่างกายขาดน้ำ',
+      'บางรายเป็นทวารเทียมชั่วคราว แพทย์จะนัดผ่าตัดปิดภายหลัง'],
+    warn:[
+      'ทวารเทียมเป็นสีม่วงคล้ำหรือดำ ยุบลงไป หรือยื่นยาวและบวมผิดปกติ',
+      'ไม่มีอะไรออกจากทวารเทียมนาน ร่วมกับปวดท้อง อาเจียน',
+      'ของเสียออกเหลวมากต่อเนื่อง ร่วมกับปัสสาวะน้อย ปากแห้ง เวียนหัว',
+      'มีเลือดออกจากทวารเทียมมาก หรือผิวรอบ ๆ แดงเปื่อยมาก'] },
+  { id:'pancreas', organ:'pancreas', icon:'🟡', name:'ตับอ่อน', sub:'บาดเจ็บหรือผ่าตัดตับอ่อน',
+    care:[
+      'ช่วงแรกกินอาหารไขมันต่ำ ทีละน้อยแต่บ่อย ตามที่แพทย์แนะนำ',
+      '<b>งดแอลกอฮอล์เด็ดขาด</b>',
+      'ถ้ากลับบ้านพร้อมสายระบาย ดูแลตามที่พยาบาลสอน และจดปริมาณน้ำที่ออกมานำมาให้แพทย์ดู',
+      'ไปตามนัดตรวจเลือดและน้ำตาล'],
+    warn:[
+      'ปวดท้องส่วนบนรุนแรง ร้าวไปที่หลัง คลื่นไส้ อาเจียน',
+      'มีไข้ หนาวสั่น',
+      'กระหายน้ำมาก ปัสสาวะบ่อย น้ำหนักลด',
+      'อุจจาระมันเยิ้ม ลอยน้ำ กลิ่นแรง',
+      'น้ำจากสายระบายออกมากขึ้นมาก หรือผิวรอบสายแดงเปื่อย'] },
+  { id:'kidney', organ:'kidney', icon:'🟫', name:'ไต', sub:'บาดเจ็บที่ไต',
+    care:[
+      'ดื่มน้ำให้เพียงพอ ตามที่แพทย์แนะนำ',
+      'งดยกของหนักและกีฬาปะทะ จนกว่าแพทย์อนุญาต',
+      'ไม่ซื้อยาแก้ปวดกลุ่ม NSAIDs มากินเอง เพราะมีผลต่อไต',
+      'วัดความดันโลหิตตามนัด เพราะบางรายความดันสูงขึ้นภายหลัง',
+      'ถ้าแพทย์แจ้งว่ายังมีเลือดปนในปัสสาวะเล็กน้อย ให้สังเกตว่าสีจางลงเรื่อย ๆ'],
+    warn:[
+      'ปัสสาวะเป็นเลือดมากขึ้น มีลิ่มเลือด หรือปัสสาวะไม่ออก',
+      'ปวดหลังหรือบั้นเอวมากขึ้น',
+      'มีไข้ หนาวสั่น',
+      'หน้ามืด ใจสั่น ซีด'] },
+  { id:'bladder', organ:'bladder', icon:'💛', name:'กระเพาะปัสสาวะ', sub:'บาดเจ็บหรือผ่าตัดซ่อมกระเพาะปัสสาวะ',
+    care:[
+      'บางรายต้องกลับบ้านพร้อมสายสวนปัสสาวะหลายสัปดาห์ ห้ามดึงหรือถอดสายเอง',
+      'ล้างมือก่อนจับสาย วางถุงให้ต่ำกว่าระดับเอวเสมอ ไม่ให้สายหักพับ เทถุงเมื่อเกินครึ่ง',
+      'ทำความสะอาดรอบรูเปิดของสายทุกวัน ดื่มน้ำมากพอ ถ้าแพทย์ไม่ได้ห้าม',
+      'ไปตามนัดตรวจและถอดสาย'],
+    warn:[
+      'ปัสสาวะไม่ไหลออก ร่วมกับปวดตึงท้องน้อย',
+      'สายหลุด',
+      'มีไข้ ปัสสาวะขุ่น กลิ่นแรง',
+      'มีเลือดหรือลิ่มเลือดในปัสสาวะมากขึ้น'] },
+];
+
+function renderOrganCare() {
+  return '' +
+    '<p class="lead">เลือกอวัยวะที่แพทย์แจ้งว่าบาดเจ็บหรือผ่าตัด แตะเพื่อเปิดดูวิธีดูแลตัวเองและอาการที่ต้องรีบกลับโรงพยาบาล</p>' +
+    '<div class="oc-list">' + ORGAN_CARE.map(function (o) {
+      var org = ORGANS.filter(function (x) { return x.id === o.organ; })[0];
+      return '<details class="oc" id="care-' + o.id + '" style="--oc:' + (org ? org.color : 'var(--brand)') + '">' +
+        '<summary><span class="oc-sw"></span><span class="oc-t"><b>' + o.name + '</b><small>' + o.sub + '</small></span></summary>' +
+        '<div class="oc-body">' +
+          '<h3>✅ ดูแลตัวเองอย่างไร</h3>' + ul(o.care) +
+          '<div class="oc-warn"><h3>🚨 รีบกลับโรงพยาบาล หรือโทร 1669 เมื่อ</h3>' + ul(o.warn, 'warn') + '</div>' +
+        '</div></details>';
+    }).join('') + '</div>' +
+    '<div class="section-block"><h2>ผู้ป่วยเด็ก</h2>' +
+    '<p>เด็กอาจแสดงอาการไม่ชัดเจน ผู้ปกครองควรสังเกตว่าเด็ก<b>ซึมลง ร้องไห้มากผิดปกติ ไม่ยอมกินอาหาร อาเจียน หรือท้องอืดตึงขึ้น</b> แล้วแจ้งพยาบาลทันที</p></div>' +
+    '<div class="note"><b>ระยะเวลาเป็นค่าประมาณ</b><br>แต่ละคนต่างกันตามความรุนแรงและวิธีรักษา ให้ทำตามที่แพทย์ผู้รักษากำหนดเป็นหลัก</div>';
+}
+
+// เปิดหัวข้ออวัยวะจากภาพ Interactive
+var _openCare = null;
+function goCare(id) { _openCare = id; if (cur === 4) openCare(); else go(4); }
+function openCare() {
+  if (!_openCare) return;
+  var d = document.getElementById('care-' + _openCare); _openCare = null;
+  if (!d) return;
+  d.open = true;
+  setTimeout(function () { d.scrollIntoView({ behavior:'smooth', block:'start' }); }, 120);
+}
 
 // ══════════════════════════════════════════════════════
 // หน้าแรก + สารบัญ
@@ -963,6 +1086,7 @@ function render(i) {
   main.classList.remove('enter-next', 'enter-prev'); void main.offsetWidth; main.classList.add('enter-' + dir);
   document.body.classList.toggle('on-danger', !!c.danger);
   if (i === CHAPTERS.length - 1) recLoad();
+  if (i === 4) openCare();
   window.scrollTo(0, 0);
   // แถบบน / ล่าง
   document.getElementById('topSmall').textContent = i === 0 ? 'คู่มือผู้ป่วยและญาติ' : (i === CHAPTERS.length - 1 ? 'ใบบันทึก' : 'ส่วนที่ ' + i + ' จาก ' + (CHAPTERS.length - 2));
