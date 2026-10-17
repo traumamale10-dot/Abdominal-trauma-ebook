@@ -168,6 +168,7 @@ details.faq[open] summary::after { content:'−'; }
 details.faq div { padding:0 16px 14px; color:var(--ink2); }
 
 /* การดูแลตามอวัยวะ */
+.oc-hint { margin:8px 0 0; padding:10px 14px; border-radius:14px; background:var(--brand-soft); font-size:.95rem; }
 .oc-list { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
 details.oc { background:var(--surface); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
 details.oc[open] { border-color:var(--oc); box-shadow:0 0 0 1px var(--oc), var(--shadow); }
@@ -175,6 +176,16 @@ details.oc summary { list-style:none; display:flex; align-items:center; gap:12px
 details.oc summary::-webkit-details-marker { display:none; }
 details.oc summary::after { content:'+'; position:absolute; right:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; font-size:1.25rem; font-family:'IBM Plex Sans Thai',sans-serif; }
 details.oc[open] summary::after { content:'−'; }
+.oc-say { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 16px; margin:2px 0 6px; border-radius:22px; border:1px solid var(--brand); background:var(--brand-soft); color:var(--brand); font:inherit; font-weight:700; cursor:pointer; }
+.oc-say.on { background:var(--brand); color:var(--brand-ink); }
+.au-guide { margin:18px 0 6px; background:var(--surface); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); }
+.au-guide summary { list-style:none; padding:14px 16px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px; }
+.au-guide summary::-webkit-details-marker { display:none; }
+.au-guide summary::after { content:'›'; margin-left:auto; transition:transform .2s; font-size:1.3rem; color:var(--brand); }
+.au-guide[open] summary::after { transform:rotate(90deg); }
+.au-guide ol { margin:0; padding:0 16px 16px 40px; line-height:1.7; }
+.au-guide ol li { margin:6px 0; }
+.au-guide kbd { display:inline-block; min-width:28px; padding:0 6px; border-radius:8px; border:1px solid var(--line); background:var(--brand-soft); font:inherit; font-weight:700; text-align:center; }
 .oc-sw { width:14px; height:42px; border-radius:7px; background:var(--oc); flex-shrink:0; box-shadow:0 0 10px var(--oc); }
 .oc-t { line-height:1.35; }
 .oc-t b { display:block; font-size:1.08rem; font-family:'IBM Plex Sans Thai',sans-serif; }
@@ -819,14 +830,25 @@ function axProbe(src, cb) {
   setTimeout(function () { fin(false); }, 6000);
   a.src = src;
 }
+var _axBtn = null;
+function axStop() { if (_axAudio) _axAudio.pause(); if (_axBtn) _axBtn.classList.remove('on'); _axBtn = null; }
 function axSay(btn) {
   if (AU && AU.el) AU.el.pause();
-  if (_axAudio && !_axAudio.paused) { _axAudio.pause(); btn.classList.remove('on'); return; }
-  _axAudio = new Audio(btn.dataset.src);
+  var same = _axBtn === btn && _axAudio && !_axAudio.paused;
+  axStop();
+  if (same) return;
+  _axAudio = new Audio(btn.dataset.src); _axBtn = btn;
   btn.classList.add('on');
-  _axAudio.addEventListener('ended', function () { btn.classList.remove('on'); });
+  _axAudio.addEventListener('ended', function () { btn.classList.remove('on'); if (_axBtn === btn) _axBtn = null; });
   _axAudio.play().catch(function () { btn.classList.remove('on'); });
 }
+// แสดงปุ่ม "ฟังวิธีดูแล" เมื่อเปิดหัวข้ออวัยวะ และมีไฟล์เสียงจริง / หยุดเสียงเมื่อปิดหัวข้อ
+document.addEventListener('toggle', function (e) {
+  var d = e.target; if (!d.classList || !d.classList.contains('oc')) return;
+  var b = d.querySelector('.oc-say'); if (!b) return;
+  if (!d.open) { if (_axBtn === b) axStop(); return; }
+  axProbe(b.dataset.src, function (ok) { if (ok) b.style.display = ''; });
+}, true);
 
 // ── ดูภาพเต็ม (ซูมได้) ──
 function openRef(key, title) {
@@ -925,11 +947,13 @@ const ORGAN_CARE = [
 function renderOrganCare() {
   return '' +
     '<p class="lead">เลือกอวัยวะที่แพทย์แจ้งว่าบาดเจ็บหรือผ่าตัด แตะเพื่อเปิดดูวิธีดูแลตัวเองและอาการที่ต้องรีบกลับโรงพยาบาล</p>' +
+    '<p class="oc-hint">🎧 แตะชื่ออวัยวะ แล้วกดปุ่ม <b>🔊 ฟังวิธีดูแล</b> เพื่อฟังเฉพาะอวัยวะของคุณ</p>' +
     '<div class="oc-list">' + ORGAN_CARE.map(function (o) {
       var org = ORGANS.filter(function (x) { return x.id === o.organ; })[0];
       return '<details class="oc" id="care-' + o.id + '" style="--oc:' + (org ? org.color : 'var(--brand)') + '">' +
         '<summary><span class="oc-sw"></span><span class="oc-t"><b>' + o.name + '</b><small>' + o.sub + '</small></span></summary>' +
         '<div class="oc-body">' +
+          '<button class="oc-say" style="display:none" data-src="audio/care-' + o.id + '.mp3" onclick="axSay(this)" aria-label="ฟังวิธีดูแล ' + o.name + '">🔊 ฟังวิธีดูแล</button>' +
           '<h3>✅ ดูแลตัวเองอย่างไร</h3>' + ul(o.care) +
           '<div class="oc-warn"><h3>🚨 รีบกลับโรงพยาบาล หรือโทร 1669 เมื่อ</h3>' + ul(o.warn, 'warn') + '</div>' +
         '</div></details>';
@@ -985,6 +1009,14 @@ function renderHome() {
       '<div class="journey-head"><h2>เส้นทางการดูแล</h2><span>อ่านแล้ว ' + n + '/' + (CHAPTERS.length - 2) + '</span></div>' +
       '<ul class="toc">' + tocHTML() + '</ul>' +
     '</div>' +
+    '<details class="au-guide"><summary>🎧 วิธีฟังเสียงอ่าน</summary><ol>' +
+      '<li>เปิดเสียงโทรศัพท์ให้ดังพอ แล้วเข้าไปในบทที่ต้องการ</li>' +
+      '<li>กดปุ่ม <kbd>🔊</kbd> ที่แถบด้านล่าง เพื่อฟังเสียงอ่านทั้งบท (ปุ่มจะขึ้นเฉพาะบทที่มีเสียง)</li>' +
+      '<li>กด <kbd>▶</kbd> / <kbd>⏸</kbd> เพื่อเล่นหรือหยุด เลื่อนแถบเพื่อฟังย้อนหลัง กด <kbd>1x</kbd> เพื่อปรับให้ช้าลงหรือเร็วขึ้น</li>' +
+      '<li>กด <kbd>🔁</kbd> ให้เป็นสีเข้ม ถ้าต้องการให้อ่านบทถัดไปต่ออัตโนมัติ</li>' +
+      '<li><b>ส่วนที่ 4</b> แยกเสียงตามอวัยวะ แตะชื่ออวัยวะที่แพทย์แจ้ง แล้วกด <kbd>🔊 ฟังวิธีดูแล</kbd> ฟังเฉพาะของตัวเอง</li>' +
+      '<li>แตะอวัยวะบนภาพร่างกาย แล้วกด <kbd>🔊</kbd> ในกล่องข้อมูล เพื่อฟังว่าอวัยวะนั้นอยู่ตรงไหน ทำหน้าที่อะไร</li>' +
+    '</ol></details>' +
     '<p class="disclaimer">ข้อมูลนี้ใช้ประกอบคำแนะนำของแพทย์และพยาบาล ให้ปฏิบัติตามคำสั่งของแพทย์ผู้รักษาเป็นหลัก<br>ฉุกเฉินโทร <a href="tel:1669">1669</a></p>';
 }
 
@@ -1120,6 +1152,7 @@ function render(i) {
   document.getElementById('btnNext').disabled = i === CHAPTERS.length - 1;
   document.getElementById('drawerToc').innerHTML = '<li><a href="#home" class="' + (i === 0 ? 'cur' : '') + '" onclick="closeAll()"><span class="n">⌂</span><span class="t"><b>หน้าแรก</b><small>สารบัญและแผนภาพอวัยวะ</small></span></a></li>' + tocHTML();
   document.title = (i === 0 ? '' : c.title + ' — ') + 'บาดเจ็บช่องท้อง';
+  if (typeof axStop === "function") axStop();
   auOnChapter();
 }
 
@@ -1305,6 +1338,7 @@ function auToggleAuto() { AU.auto = !AU.auto; try { localStorage.setItem('abdAuA
 (function auInit() {
   var el = AU.el = document.getElementById('auEl'), seek = document.getElementById('auSeek');
   el.addEventListener('play', auUI); el.addEventListener('pause', auUI);
+  el.addEventListener('play', function () { if (typeof axStop === 'function') axStop(); });
   el.addEventListener('loadedmetadata', function () { document.getElementById('auDur').textContent = auFmt(el.duration); el.playbackRate = AU_RATES[AU.rateIdx].v; });
   el.addEventListener('timeupdate', function () { if (AU.seeking || !el.duration) return; seek.value = Math.round(el.currentTime / el.duration * 1000); document.getElementById('auCur').textContent = auFmt(el.currentTime); });
   el.addEventListener('ended', function () { auUI(); if (AU.auto && cur < CHAPTERS.length - 1) { AU.next = true; setTimeout(function () { go(cur + 1); }, 700); } });
