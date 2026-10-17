@@ -340,6 +340,15 @@ body.on-danger .nav-btn.sos-btn { display:none; }
 .pv-tab.on { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); }
 .pv-frame { position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; background:#000 center/cover no-repeat; cursor:pointer; }
 .pv-frame iframe, .pv-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; object-fit:contain; }
+.pv-note { color:var(--ink2); font-size:.85rem; text-align:center; margin-top:6px; }
+.pv-fs { display:none; margin:8px auto 0; padding:8px 16px; border-radius:18px; border:1px solid var(--brand); background:var(--brand-soft); color:var(--brand); font:inherit; font-weight:700; cursor:pointer; }
+.pv-box.playing .pv-fs { display:block; }
+.pv-box.playing .pv-note { display:none; }
+.pv-frame.portrait { max-height:62vh; max-height:62dvh; margin:0 auto; width:auto; }
+.pvo-frame.portrait { width:auto; height:100%; }
+body.pv-max-open { overflow:hidden; }
+.nav-btn.vid-btn { display:none; }
+.nav-btn.vid-btn.has-video { display:flex; }
 .pv-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; background:var(--brand); color:var(--brand-ink); font-size:1.6rem; display:flex; align-items:center; justify-content:center; padding-left:4px; box-shadow:0 0 24px var(--glow); }
 #pv-overlay { position:fixed; inset:0; z-index:120; background:#000; display:none; flex-direction:column; height:100vh; height:100dvh; padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
 #pv-overlay.show { display:flex; }
@@ -451,6 +460,7 @@ html, body { overflow-x:hidden; }
   <div class="bottombar-in">
     <button class="nav-btn" id="btnPrev" onclick="go(cur-1)" aria-label="บทก่อนหน้า">‹ <span class="lbl">ก่อนหน้า</span></button>
     <div class="nav-mid"><span id="navMid">หน้าแรก</span><div class="dots-bar" id="dotsBar"></div></div>
+    <button class="nav-btn vid-btn" id="vidBtn" onclick="openVideo()" aria-label="ดูคลิปวิดีโอบทนี้">🎬</button>
     <button class="nav-btn au-btn" id="auBtn" onclick="auBtnClick()" aria-label="ฟังเสียงอ่านบทนี้">🔊</button>
     <button class="nav-btn sos-btn" onclick="openRedFlag()" aria-label="เช็กอาการอันตราย">🚨</button>
     <button class="nav-btn primary" id="btnNext" onclick="go(cur+1)" aria-label="บทถัดไป"><span class="lbl">ถัดไป</span> ›</button>
@@ -522,8 +532,13 @@ const IMGDATA = {"front": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2w
 // ──────────────────────────────────────────────────────
 // เสียงอ่าน: อัปโหลดไฟล์ .mp3 ไว้ในโฟลเดอร์ audio/ แล้วตั้งชื่อตามตาราง
 //            ถ้าไม่มีไฟล์ ปุ่ม 🔊 จะไม่แสดงเอง
-// วิดีโอ: ใส่ไฟล์ 'videos/xxx.mp4' (แนะนำ) หรือลิงก์ YouTube
-//         หลายคลิป: [ { title:'ชื่อคลิป', url:'videos/a.mp4' }, ... ]
+// วิดีโอ: ใส่ได้ 3 แบบ (เหมือนเล่ม Facial)
+//   • ไฟล์ในโฟลเดอร์ videos/        video:'videos/cough.mp4'
+//   • ลิงก์ YouTube (ตั้งเป็น Unlisted) video:'https://youtu.be/AbCdEfGhIjK'
+//   • ลิงก์ Google Drive (แชร์แบบ "ทุกคนที่มีลิงก์")
+//                                    video:'https://drive.google.com/file/d/xxxx/view?usp=sharing'
+//   หลายคลิป: video:[ { title:'การไอ', url:'...' }, { title:'การลุกจากเตียง', url:'...' } ]
+//   บทไหนไม่มีคลิปให้ปล่อย ''  → จะไม่มีกล่องวิดีโอและปุ่ม 🎬
 // รูปประกอบ: ใส่ไฟล์ในโฟลเดอร์ images/ เช่น 'images/ch3.png'  (ไม่ใส่ก็ได้)
 // ══════════════════════════════════════════════════════
 const MEDIA = [
@@ -1174,6 +1189,7 @@ function render(i) {
   document.getElementById('drawerToc').innerHTML = '<li><a href="#home" class="' + (i === 0 ? 'cur' : '') + '" onclick="closeAll()"><span class="n">⌂</span><span class="t"><b>หน้าแรก</b><small>สารบัญและแผนภาพอวัยวะ</small></span></a></li>' + tocHTML();
   document.title = (i === 0 ? '' : c.title + ' — ') + 'บาดเจ็บช่องท้อง';
   if (typeof axStop === "function") axStop();
+  vidOnChapter();
   auOnChapter();
 }
 
@@ -1259,14 +1275,16 @@ function vidList(i) {
 function vidInfo(url) {
   if (!url) return null;
   if (/\.(mp4|webm|m4v)(\?|#|$)/i.test(url)) return { type:'file', src:url };
+  var g = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{20,})/);
+  if (g) return { type:'gd', id:g[1] };
   var m = url.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/|live\/)([\w-]{11})/) || url.match(/^([\w-]{11})$/);
-  if (m) return { type:'yt', id:m[1] };
-  var g = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]{20,})/);
-  return g ? { type:'gd', id:g[1] } : null;
+  return m ? { type:'yt', id:m[1] } : null;
 }
+// กล่องวิดีโอ: แสดงภาพตัวอย่างก่อน กดแล้วจึงโหลดวิดีโอ (ประหยัดเน็ต)
 function vidCover(v) {
   var info = vidInfo(v.url);
-  var bg = info.type === 'yt' ? 'background-image:url(https://i.ytimg.com/vi/' + info.id + '/hqdefault.jpg);' : '';
+  var bg = info.type === 'yt' ? 'background-image:url(https://i.ytimg.com/vi/' + info.id + '/hqdefault.jpg);'
+         : info.type === 'gd' ? 'background-image:url(https://drive.google.com/thumbnail?id=' + info.id + '&sz=w640);' : '';
   return '<div class="pv-frame" data-url="' + esc(v.url) + '" style="' + bg + '" onclick="pvPlay(this)" role="button" aria-label="เล่นวิดีโอ ' + esc(v.title) + '"><span class="pv-play">▶</span></div>';
 }
 function vidBlock(i) {
@@ -1274,33 +1292,80 @@ function vidBlock(i) {
   if (!list.length) return '';
   return '<div class="pv-box" data-ch="' + i + '"><div class="pv-head">🎬 ' + (list.length > 1 ? 'คลิปวิดีโอ (' + list.length + ' คลิป)' : esc(list[0].title)) + '</div>' +
     (list.length > 1 ? '<div class="pv-tabs">' + list.map(function (v, n) { return '<button class="pv-tab' + (n ? '' : ' on') + '" data-n="' + n + '" onclick="pvTab(this)">' + esc(v.title) + '</button>'; }).join('') + '</div>' : '') +
-    '<div class="pv-holder">' + vidCover(list[0]) + '</div></div>';
+    '<div class="pv-holder">' + vidCover(list[0]) + '</div>' +
+    '<div class="pv-note">แตะเพื่อเล่น · ดูได้ในหน้านี้เลย</div>' +
+    '<button class="pv-fs" onclick="pvFull(this)">⛶ ดูแบบเต็มจอ</button></div>';
 }
 function pvTab(btn) {
   var box = btn.closest('.pv-box');
+  box.classList.remove('playing');
   box.querySelectorAll('.pv-tab').forEach(function (b) { b.classList.toggle('on', b === btn); });
   box.querySelector('.pv-holder').innerHTML = vidCover(vidList(+box.dataset.ch)[+btn.dataset.n]);
 }
 function playerHTML(info) {
-  if (info.type === 'yt') return '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
-  if (info.type === 'gd') return '<iframe src="https://drive.google.com/file/d/' + info.id + '/preview" title="คลิปวิดีโอ" allow="autoplay; fullscreen" allowfullscreen></iframe>';
-  return '<video src="' + esc(info.src) + '" controls autoplay playsinline></video>';
+  if (info.type === 'yt') return '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  if (info.type === 'gd') return '<video src="https://drive.google.com/uc?export=download&id=' + info.id + '" controls autoplay playsinline preload="metadata" onloadedmetadata="pvFit(this)" onerror="pvDriveFallback(this,\'' + info.id + '\')"></video>';
+  return '<video src="' + esc(info.src) + '" controls autoplay playsinline onloadedmetadata="pvFit(this)"></video>';
 }
+// มือถือ / จอเล็ก → เปิดเล่นเต็มหน้าจอเสมอ (ภาพไม่เพี้ยน ไม่โดนแถบล่างบัง)
 function isSmall() { return window.matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1024px)').matches; }
 function pvPlay(el) {
-  var info = vidInfo(el.getAttribute('data-url')); if (!info) return;
+  var url = el.getAttribute('data-url'), info = vidInfo(url); if (!info) return;
   if (AU.el) AU.el.pause();
-  if (isSmall()) {
-    var box = el.closest('.pv-box'), on = box && box.querySelector('.pv-tab.on');
-    document.getElementById('pvoTitle').textContent = '🎬 ' + (on ? on.textContent : 'คลิปวิดีโอ');
-    document.getElementById('pvoFrame').innerHTML = playerHTML(info);
-    document.getElementById('pv-overlay').classList.add('show');
-    return;
-  }
+  if (typeof axStop === 'function') axStop();
+  if (isSmall()) { pvOpenMax(url, el.closest('.pv-box')); return; }
   el.onclick = null; el.style.backgroundImage = '';
+  var box = el.closest('.pv-box'); if (box) box.classList.add('playing');
   el.innerHTML = playerHTML(info);
 }
-function pvCloseMax() { document.getElementById('pv-overlay').classList.remove('show'); document.getElementById('pvoFrame').innerHTML = ''; }
+function pvOpenMax(url, box) {
+  var info = vidInfo(url); if (!info) return;
+  var title = '🎬 คลิปวิดีโอ';
+  if (box) { var on = box.querySelector('.pv-tab.on'), head = box.querySelector('.pv-head'); title = '🎬 ' + (on ? on.textContent : (head ? head.textContent.replace('🎬', '').trim() : 'คลิปวิดีโอ')); }
+  document.getElementById('pvoTitle').textContent = title;
+  var f = document.getElementById('pvoFrame');
+  f.style.aspectRatio = ''; f.classList.remove('portrait');
+  f.innerHTML = playerHTML(info);
+  document.getElementById('pv-overlay').classList.add('show');
+  document.body.classList.add('pv-max-open');
+}
+function pvCloseMax() {
+  document.getElementById('pv-overlay').classList.remove('show');
+  document.getElementById('pvoFrame').innerHTML = '';   // หยุดวิดีโอ
+  document.body.classList.remove('pv-max-open');
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('pv-max-open')) pvCloseMax(); });
+// ปรับกรอบให้ตรงกับสัดส่วนคลิปจริง (คลิปแนวตั้งจะไม่ถูกตัด)
+function pvFit(v) {
+  if (!v.videoWidth || !v.videoHeight) return;
+  var f = v.closest('.pv-frame, .pvo-frame'); if (!f) return;
+  f.style.aspectRatio = v.videoWidth + ' / ' + v.videoHeight;
+  if (v.videoHeight > v.videoWidth) f.classList.add('portrait');
+}
+// เล่นไฟล์จาก Drive ตรง ๆ ไม่ได้ (เช่น ไฟล์ใหญ่) → ใช้ตัวเล่นของ Drive แทน
+function pvDriveFallback(v, id) {
+  var f = v.closest('.pv-frame, .pvo-frame'); if (!f) return;
+  f.innerHTML = '<iframe src="https://drive.google.com/file/d/' + id + '/preview" title="คลิปวิดีโอ" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+}
+function pvFull(btn) {
+  var box = btn.closest('.pv-box'), url = box.querySelector('.pv-frame').getAttribute('data-url'), on = box.querySelector('.pv-tab.on');
+  box.classList.remove('playing');
+  box.querySelector('.pv-holder').innerHTML = vidCover(vidList(+box.dataset.ch)[on ? +on.dataset.n : 0]);
+  pvOpenMax(url, box);
+}
+// เปลี่ยนบท → ปิดวิดีโอ และแสดง/ซ่อนปุ่ม 🎬
+function vidOnChapter() {
+  if (document.body.classList.contains('pv-max-open')) pvCloseMax();
+  var b = document.getElementById('vidBtn'); if (b) b.classList.toggle('has-video', vidList(cur).length > 0);
+}
+// ปุ่ม 🎬 ที่แถบล่าง → เลื่อนไปที่กล่องวิดีโอแล้วเล่น
+function openVideo() {
+  var box = document.querySelector('#main .pv-box'); if (!box) return;
+  var f = box.querySelector('.pv-frame[data-url]');
+  if (isSmall()) { if (f) pvPlay(f); return; }
+  box.scrollIntoView({ behavior:'smooth', block:'center' });
+  if (f && !f.querySelector('iframe,video')) setTimeout(function () { pvPlay(f); }, 350);
+}
 
 // ══════════════════════════════════════════════════════
 // เสียงอ่าน (ไฟล์ที่อัดเอง)
