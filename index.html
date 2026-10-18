@@ -361,6 +361,92 @@ body.pv-max-open { overflow:hidden; }
 @media (orientation: landscape) { .pvo-frame { height:100%; width:auto; max-width:100%; } }
 .chapter-img { width:100%; border-radius:18px; margin:6px 0 16px; display:block; }
 
+
+/* ═══════════════ แบบทดสอบ ═══════════════ */
+#qzOv { position:fixed; inset:0; z-index:115; background:var(--bg); background-image:radial-gradient(ellipse at 10% 0%,var(--bg-glow1),transparent 55%),radial-gradient(ellipse at 100% 30%,var(--bg-glow2),transparent 50%); overflow-y:auto; -webkit-overflow-scrolling:touch; display:none; padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom)); }
+#qzOv.show { display:block; }
+.qz-top { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:10px 16px; background:var(--dock); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+.qz-top b { font-family:'IBM Plex Sans Thai',sans-serif; }
+#qzBody { max-width:560px; margin:0 auto; padding:16px; }
+.qz-hero { text-align:center; padding:18px 0 4px; }
+.qz-hero-ic { font-size:3.4rem; line-height:1; filter:drop-shadow(0 0 18px var(--glow)); animation:qzFloat 3s ease-in-out infinite; }
+@keyframes qzFloat { 50% { transform:translateY(-6px); } }
+.qz-hero h2 { margin:8px 0 6px; font-size:1.5rem; }
+.qz-hero p { color:var(--ink2); line-height:1.6; margin:0 0 6px; }
+.qz-card { background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:14px; margin:12px 0; box-shadow:var(--shadow); }
+.qz-card h3 { margin:0 0 10px; font-size:1.02rem; }
+.qz-card h3 small { font-weight:400; color:var(--ink2); }
+.qz-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.qz-chip { min-height:46px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--line); background:var(--surface-solid); color:var(--ink); font:inherit; font-weight:600; cursor:pointer; }
+.qz-chip.on { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); box-shadow:0 0 14px var(--glow); }
+.qz-lbl { display:block; margin-top:12px; font-weight:600; font-size:.95rem; }
+.qz-lbl small { font-weight:400; color:var(--ink2); }
+.qz-lbl input { display:block; width:100%; margin-top:6px; min-height:48px; padding:0 14px; border-radius:14px; border:1px solid var(--line); background:var(--surface-solid); color:var(--ink); font:inherit; }
+.qz-consent { font-size:.82rem; color:var(--ink2); text-align:center; margin:10px 4px; line-height:1.5; }
+.qz-go { width:100%; margin-top:10px; font-size:1.08rem; }
+.qz-go:disabled { opacity:.45; box-shadow:none; cursor:not-allowed; }
+.qz-prog { display:flex; align-items:center; gap:10px; margin:4px 0 14px; font-weight:700; font-size:.9rem; color:var(--ink2); }
+.qz-prog-bar { flex:1; height:10px; border-radius:6px; background:var(--surface2); overflow:hidden; }
+.qz-prog-bar i { display:block; height:100%; background:linear-gradient(90deg,var(--brand),#7C9CFF); border-radius:6px; transition:width .4s; box-shadow:0 0 10px var(--glow); }
+.qz-streak { color:#E8730C; }
+.qz-q { text-align:center; margin-bottom:14px; }
+.qz-q-ic { font-size:2.8rem; line-height:1.1; animation:qzPop .4s ease; }
+@keyframes qzPop { from { transform:scale(.4); opacity:0; } }
+.qz-tag { display:inline-block; margin-top:6px; padding:2px 12px; border-radius:999px; background:var(--brand-soft); color:var(--brand); font-size:.82rem; font-weight:700; }
+.qz-q h3 { margin:8px 0 0; font-size:1.22rem; line-height:1.55; }
+.qz-opts { display:flex; flex-direction:column; gap:10px; }
+.qz-opt { display:flex; align-items:center; gap:12px; text-align:left; min-height:58px; padding:10px 14px; border-radius:18px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); font:inherit; font-size:1.02rem; line-height:1.45; cursor:pointer; box-shadow:var(--shadow); transition:transform .12s, border-color .2s; }
+.qz-opt:active { transform:scale(.98); }
+.qz-opt b { flex-shrink:0; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--surface2); font-family:'IBM Plex Sans Thai',sans-serif; }
+.qz-opt.right { border-color:var(--ok); background:var(--ok-bg); }
+.qz-opt.right b { background:var(--ok); color:#fff; }
+.qz-opt.wrong { border-color:var(--danger); background:var(--danger-bg); animation:qzShake .35s; }
+.qz-opt.wrong b { background:var(--danger); color:#fff; }
+.qz-opt:disabled { cursor:default; }
+.qz-opt:disabled:not(.right):not(.wrong) { opacity:.55; }
+@keyframes qzShake { 25% { transform:translateX(-6px); } 75% { transform:translateX(6px); } }
+.qz-fb { margin-top:14px; padding:14px; border-radius:18px; animation:qzPop .3s ease; line-height:1.6; }
+.qz-fb.ok { background:var(--ok-bg); border:1px solid var(--ok); }
+.qz-fb.no { background:var(--amber-bg); border:1px solid var(--amber); }
+.qz-fb p { margin:6px 0 0; }
+.qz-res { text-align:center; padding:6px 0; }
+.qz-ring { position:relative; width:168px; height:168px; margin:6px auto 10px; }
+.qz-ring svg { width:100%; height:100%; transform:rotate(-90deg); }
+.qz-ring circle { fill:none; stroke-width:11; }
+.qz-ring .bg { stroke:var(--surface2); }
+.qz-ring .fg { stroke:var(--brand); stroke-linecap:round; transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1); filter:drop-shadow(0 0 8px var(--glow)); }
+.qz-res.mid .qz-ring .fg { stroke:#E8A10C; }
+.qz-res.low .qz-ring .fg { stroke:var(--danger); }
+.qz-ring > div { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.qz-ring b { font-size:2.2rem; font-family:'IBM Plex Sans Thai',sans-serif; }
+.qz-ring span { color:var(--ink2); font-weight:700; }
+.qz-badge { display:inline-block; padding:8px 20px; border-radius:999px; font-size:1.2rem; font-weight:700; background:var(--brand-soft); color:var(--brand); font-family:'IBM Plex Sans Thai',sans-serif; }
+.qz-res.mid .qz-badge { background:var(--amber-bg); color:var(--amber); }
+.qz-res.low .qz-badge { background:var(--danger-bg); color:var(--danger); }
+.qz-res p { line-height:1.6; margin:10px 6px 0; }
+.qz-cmp { color:var(--ink2); font-size:.92rem; }
+.qz-wrong { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.qz-wrong li { padding:10px 12px; border-radius:14px; background:var(--surface2); line-height:1.55; }
+.qz-wrong b, .qz-wrong span, .qz-wrong small { display:block; }
+.qz-wrong span { color:var(--ok); font-weight:700; margin-top:4px; }
+.qz-wrong small { color:var(--ink2); font-size:.88rem; margin-top:2px; }
+.qz-revs { display:flex; flex-direction:column; gap:8px; }
+.qz-rev { display:flex; justify-content:space-between; align-items:center; gap:8px; min-height:50px; padding:8px 14px; border-radius:14px; border:1px solid var(--brand); background:var(--brand-soft); color:var(--ink); font:inherit; font-weight:600; text-align:left; cursor:pointer; }
+.qz-rev small { color:var(--brand); font-weight:700; white-space:nowrap; }
+.qz-perfect { text-align:center; font-size:1.1rem; font-weight:700; }
+.qz-remind { border-color:var(--danger-glow); background:var(--danger-bg); }
+.qz-remind p { margin:0; line-height:1.6; }
+.qz-remind a { color:var(--danger); font-weight:700; }
+.qz-save { text-align:center; font-size:.88rem; color:var(--ink2); min-height:1.4em; }
+.qz-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.qz-confetti { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:3; }
+.qz-confetti i { position:absolute; top:-12px; width:9px; height:14px; border-radius:2px; animation:qzFall linear forwards; }
+@keyframes qzFall { to { top:105%; transform:translateX(40px) rotate(720deg); } }
+.quiz-cta { display:flex; align-items:center; gap:14px; width:100%; margin:16px 0; padding:16px; border-radius:22px; border:1px solid var(--brand); background:linear-gradient(120deg,var(--brand-soft),rgba(124,156,255,.16)); color:var(--ink); font:inherit; text-align:left; cursor:pointer; box-shadow:0 8px 26px var(--glow); }
+.quiz-cta .ic { font-size:2.2rem; }
+.quiz-cta b { display:block; font-size:1.1rem; font-family:'IBM Plex Sans Thai',sans-serif; }
+.quiz-cta small { color:var(--ink2); }
+.quiz-cta .go { margin-left:auto; font-size:1.5rem; color:var(--brand); }
 /* ═══════════════ สำรวจอวัยวะ (Interactive) ═══════════════ */
 .ax { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:14px; align-items:start; margin:12px 0 6px; }
 .ax.compact, .hero .ax { grid-template-columns:minmax(0,1fr); }
@@ -535,6 +621,10 @@ html, body { overflow-x:hidden; }
   <div class="ref-scroll"></div>
 </div>
 
+<div id="qzOv" role="dialog" aria-label="แบบทดสอบความรู้">
+  <div class="qz-top"><b>🧠 แบบทดสอบความรู้</b><button class="icon-btn" onclick="closeQuiz()" aria-label="ปิด">✕</button></div>
+  <div id="qzBody"></div>
+</div>
 <div id="ax3d" role="dialog" aria-label="กายวิภาค 3 มิติ">
   <div class="pvo-bar"><span>🧬 3 มิติ</span><div style="display:flex;gap:8px;flex-shrink:0;"><a class="ax3d-new" id="ax3dNew" href="#" target="_blank" rel="noopener">↗ เปิดหน้าใหม่</a><button onclick="close3D()" style="white-space:nowrap">✕ ปิด</button></div></div>
   <div class="ax3d-hint">ใช้นิ้วลากเพื่อหมุน · ถ่างสองนิ้วเพื่อซูม · แตะอวัยวะเพื่อดูชื่อ<br>ถ้าภาพไม่ขึ้น กด <b>↗ เปิดหน้าใหม่</b></div>
@@ -1098,6 +1188,7 @@ function renderHome() {
       '<div class="journey-head"><h2>เส้นทางการดูแล</h2><span>อ่านแล้ว ' + n + '/' + (CHAPTERS.length - 2) + '</span></div>' +
       '<ul class="toc">' + tocHTML() + '</ul>' +
     '</div>' +
+    '<button class="quiz-cta" onclick="openQuiz()"><span class="ic">🧠</span><span><b>แบบทดสอบความรู้</b><small>อ่านจบแล้ว ลองตอบ 10 ข้อ ดูว่าพร้อมดูแลตัวเองแค่ไหน</small></span><span class="go">›</span></button>' +
     '<details class="au-guide"><summary>🎧 วิธีฟังเสียงอ่าน</summary><ol>' +
       '<li>เปิดเสียงโทรศัพท์ให้ดังพอ แล้วเข้าไปในบทที่ต้องการ</li>' +
       '<li>กดปุ่ม <kbd>🔊</kbd> ที่แถบด้านล่าง เพื่อฟังเสียงอ่านทั้งบท (ปุ่มจะขึ้นเฉพาะบทที่มีเสียง)</li>' +
@@ -1138,6 +1229,7 @@ function renderRecord() {
     '</div></div>' +
     '<div class="hero-actions no-print"><button class="btn btn-brand" onclick="window.print()">🖨️ พิมพ์ใบบันทึก</button>' +
     '<a class="btn btn-ghost" href="tel:1669">📞 ฉุกเฉิน 1669</a></div>' +
+    '<button class="quiz-cta no-print" onclick="openQuiz()"><span class="ic">🧠</span><span><b>แบบทดสอบความรู้</b><small>อ่านจบแล้ว ลองตอบ 10 ข้อ ดูว่าพร้อมดูแลตัวเองแค่ไหน</small></span><span class="go">›</span></button>' +
     '<h2 class="no-print">แหล่งอ้างอิง</h2>' +
     '<ol class="refs no-print">' +
       '<li>ภูมินทร์ ดวงสุริยะ. การพยาบาลผู้ป่วยที่มีภาวะช็อกจากการบาดเจ็บบริเวณช่องอกและช่องท้องในระยะฉุกเฉิน: กรณีศึกษา. วารสารการแพทย์และสาธารณสุขเขต 4 2566;13(1).</li>' +
@@ -1204,6 +1296,7 @@ function render(i) {
   if (m.image) html += '<img class="chapter-img" src="' + esc(m.image) + '" alt="" onerror="this.remove()">';
   html += vidBlock(i);
   html += c.render();
+  if (i === CHAPTERS.length - 2) html += '<button class="quiz-cta" onclick="openQuiz()"><span class="ic">🧠</span><span><b>อ่านครบแล้ว! ลองทำแบบทดสอบ</b><small>ตอบประมาณ 10 ข้อ พร้อมเฉลยและคำแนะนำ</small></span><span class="go">›</span></button>';
   if (i > 0 && i < CHAPTERS.length - 1) {
     var nx = CHAPTERS[i + 1];
     html += '<a class="next-card no-print" href="#ch' + (i + 1) + '"><span><small>อ่านต่อ</small><b>' + nx.title + '</b></span><span class="arr">›</span></a>';
@@ -1501,7 +1594,7 @@ function auToggleAuto() { AU.auto = !AU.auto; try { localStorage.setItem('abdAuA
 // ปัดซ้าย/ขวาเพื่อเปลี่ยนบท (นิ้วเดียว แนวนอนชัดเจน ไม่นับการซูม)
 // ══════════════════════════════════════════════════════
 var SW = { x:0, y:0, t:0, ok:false };
-function uiOpen() { return !!document.querySelector('.drawer.show, .sheet.show, .modal.show, #pv-overlay.show, #ax3d.show, #refOverlay.show'); }
+function uiOpen() { return !!document.querySelector('.drawer.show, .sheet.show, .modal.show, #pv-overlay.show, #ax3d.show, #qzOv.show, #refOverlay.show'); }
 document.addEventListener('touchstart', function (e) {
   if (e.touches.length > 1) { SW.ok = false; return; }
   var t = e.target;
@@ -1524,6 +1617,318 @@ document.addEventListener('keydown', function (e) {
 // ══════════════════════════════════════════════════════
 // อัปเดตอัตโนมัติเมื่อไฟล์ใน GitHub เปลี่ยน
 // ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// แบบทดสอบความรู้หลังอ่าน (แยกตามการรักษาและอวัยวะ) + บันทึกลง Google Sheet
+// ──────────────────────────────────────────────────────
+// QUIZ_API: ใส่ลิงก์ Web App ของ Google Apps Script (ลงท้ายด้วย /exec)
+//           ถ้าเว้นว่าง '' แบบทดสอบยังใช้ได้ แต่จะไม่ส่งผลไปที่ Google Sheet
+// ══════════════════════════════════════════════════════
+const QUIZ_API = 'https://script.google.com/macros/s/AKfycbyaXXxnHjMQ8rOFQy0WSEI2AfJNmhEEkHrAvuYE7V-YfEq3vGPh5g3OhwlJz_Ekt103/exec';
+
+// ch = ส่วนที่ให้กลับไปอ่านทบทวน · care = เปิดหัวข้ออวัยวะในส่วนที่ 4
+const QUIZ_BANK = {
+  general: [
+    { id:'g1', e:'🚨', q:'อาการใดต้องรีบกลับโรงพยาบาล หรือโทร 1669 ทันที',
+      a:['ปวดท้องมากขึ้น ท้องแข็ง หน้ามืด ใจสั่น', 'เจ็บแผลเล็กน้อยเวลาไอ', 'อ่อนเพลียในช่วงแรกหลังกลับบ้าน', 'เบื่ออาหารเล็กน้อย'],
+      tip:'ปวดท้องมากขึ้น ท้องแข็ง หน้ามืด ใจสั่น อาจเป็นสัญญาณเลือดออกในท้อง ต้องมาโรงพยาบาลทันที', ch:6 },
+    { id:'g2', e:'📞', q:'ถ้ามีอาการฉุกเฉิน ควรโทรเบอร์ใด',
+      a:['1669', '1330', '191', '1111'],
+      tip:'1669 คือสายด่วนการแพทย์ฉุกเฉิน โทรฟรีทั่วประเทศ 24 ชั่วโมง', ch:6 },
+    { id:'g3', e:'💊', q:'ยาแก้ปวดแบบใดที่ "ไม่ควร" ซื้อมากินเอง',
+      a:['ยาแก้ปวดกลุ่ม NSAIDs เช่น ไอบูโพรเฟน', 'ยาที่แพทย์สั่งตามขนาด', 'กินยาตามแพทย์สั่งจนครบ', 'ปรึกษาเภสัชกรก่อนใช้ยา'],
+      tip:'ยากลุ่ม NSAIDs ทำให้เลือดออกง่าย ระคายเคืองกระเพาะ และมีผลต่อไต ควรใช้เฉพาะที่แพทย์สั่ง', ch:5 },
+    { id:'g4', e:'🏋️', q:'ช่วง 6–8 สัปดาห์แรก ไม่ควรยกของหนักเกินประมาณกี่กิโลกรัม',
+      a:['ประมาณ 5 กิโลกรัม', 'ประมาณ 10 กิโลกรัม', 'ประมาณ 15 กิโลกรัม', 'ยกได้ตามปกติ'],
+      tip:'ไม่ยกเกินประมาณ 5 กก. เช่น ถุงข้าวสาร 5 กก. ถังน้ำ หรืออุ้มเด็กเล็ก เพื่อไม่ให้แรงดันในท้องสูง', ch:5 },
+    { id:'g5', e:'💭', q:'ถ้ากังวล นอนไม่หลับ หรือฝันร้ายหลังอุบัติเหตุ ควรทำอย่างไร',
+      a:['พูดคุยกับครอบครัวหรือพยาบาล ถ้าไม่ดีขึ้นให้ปรึกษาแพทย์', 'เก็บไว้คนเดียว เดี๋ยวก็หายเอง', 'ดื่มเหล้าเพื่อให้หลับง่าย', 'ซื้อยานอนหลับมากินเอง'],
+      tip:'ความกังวลหลังอุบัติเหตุพบได้บ่อย การพูดคุยช่วยได้ และการปรึกษาแพทย์ไม่ใช่เรื่องน่าอาย', ch:7 },
+    { id:'g6', e:'🏍️', q:'ข้อใดช่วยป้องกันการบาดเจ็บซ้ำได้ดีที่สุด',
+      a:['สวมหมวกกันน็อกและคาดเข็มขัดนิรภัยทุกครั้ง', 'ขับเร็วจะได้ถึงเร็ว', 'ขับรถหลังดื่มนิดหน่อยไม่เป็นไร', 'คุยโทรศัพท์ขณะขับขี่ได้'],
+      tip:'หมวกกันน็อกและเข็มขัดนิรภัยลดความรุนแรงของการบาดเจ็บได้มาก', ch:9 }
+  ],
+  op: [
+    { id:'s1', e:'🛏️', q:'เวลาไอหรือจามหลังผ่าตัด ควรทำอย่างไร',
+      a:['ใช้หมอนหรือผ้ากดพยุงแผลไว้', 'กลั้นไอไว้ไม่ให้ไอเลย', 'นอนราบแล้วไอแรง ๆ', 'กดแผลด้วยมือเปล่าแรง ๆ'],
+      tip:'หมอนช่วยพยุงแผล ลดความเจ็บ และการไอช่วยป้องกันปอดแฟบ', ch:3 },
+    { id:'s2', e:'🩹', q:'แผลผ่าตัดลักษณะใด "ผิดปกติ" ต้องรีบแจ้ง',
+      a:['บวมแดง ร้อน มีหนอง หรือแผลแยก', 'แผลแห้ง ขอบแผลชิดกัน', 'มีรอยแดงบาง ๆ ตามแนวแผล', 'คันเล็กน้อยเมื่อแผลเริ่มหาย'],
+      tip:'บวมแดง ร้อน มีหนอง หรือแผลแยก เป็นอาการแผลติดเชื้อ', ch:5 },
+    { id:'s3', e:'🚶', q:'ทำไมควรลุกเดินให้เร็วที่สุดเท่าที่แพทย์อนุญาต',
+      a:['ป้องกันลิ่มเลือดอุดตัน ท้องอืด และปอดอักเสบ', 'เพื่อให้กลับบ้านได้ทันที', 'ช่วยให้แผลไม่เจ็บเลย', 'ไม่มีประโยชน์ ควรนอนนิ่ง ๆ'],
+      tip:'การลุกเดินช่วยให้เลือดไหลเวียน ลำไส้ทำงาน และปอดขยายตัวได้ดี', ch:3 },
+    { id:'s4', e:'🔄', q:'วิธีลุกจากเตียงหลังผ่าตัดหน้าท้องที่ถูกต้อง',
+      a:['ตะแคงตัว ห้อยขาลงข้างเตียง แล้วใช้แขนดันตัวขึ้น', 'ลุกนั่งตรง ๆ แบบท่าซิทอัพ', 'นอนคว่ำแล้วดันตัวขึ้น', 'ให้คนดึงแขนขึ้นมานั่ง'],
+      tip:'การตะแคงแล้วใช้แขนดัน ไม่ต้องเกร็งหน้าท้อง แผลจึงไม่ถูกดึงรั้ง', ch:3 },
+    { id:'s5', e:'💞', q:'หลังผ่าตัดเปิดหน้าท้อง โดยทั่วไปมีเพศสัมพันธ์ได้เมื่อใด',
+      a:['ประมาณ 6 สัปดาห์ หรือเมื่อแผลติดดีและแพทย์อนุญาต', 'ได้ทันทีที่กลับบ้าน', 'หลังผ่าตัด 1 สัปดาห์', 'ห้ามตลอดไป'],
+      tip:'รอให้แผลติดดี ไม่ปวดมาก และแพทย์อนุญาต ถามแพทย์ในวันนัดได้ไม่ต้องอาย', ch:5 }
+  ],
+  nonop: [
+    { id:'n1', e:'🏥', q:'ทำไมไม่ได้ผ่าตัด แต่ยังต้องนอนโรงพยาบาล',
+      a:['เพื่อเฝ้าระวังเลือดออก เพราะอาการบางอย่างแสดงทีหลัง', 'เพราะเตียงว่าง', 'เพื่อรอผ่าตัดแน่นอน', 'ไม่จำเป็น กลับบ้านได้เลย'],
+      tip:'เลือดออกช้า ๆ หรือลำไส้ฉีกเล็กน้อยอาจแสดงอาการภายหลัง การเฝ้าระวังใกล้ชิดจึงสำคัญ', ch:1 },
+    { id:'n2', e:'🛌', q:'ระหว่างนอนพักในโรงพยาบาล ถ้ายังไม่ได้รับอนุญาต ควรทำอย่างไร',
+      a:['นอนพัก ไม่ลุกเดินเอง และแจ้งพยาบาลเมื่อปวดมากขึ้น', 'ลุกเดินไปห้องน้ำเองได้เลย', 'กินข้าวและดื่มน้ำได้ตามใจ', 'ถอดสายน้ำเกลือเองเมื่อรู้สึกดีขึ้น'],
+      tip:'การนอนพักช่วยลดเลือดออก และต้องรอแพทย์อนุญาตก่อนกินหรือลุกเดิน', ch:2 },
+    { id:'n3', e:'🔁', q:'ถ้ารักษาแบบไม่ผ่าตัดแล้วอาการแย่ลง จะเป็นอย่างไร',
+      a:['แพทย์อาจพิจารณาผ่าตัดเพิ่ม ซึ่งเป็นการเฝ้าระวังตามปกติ', 'แปลว่าการรักษาครั้งแรกผิดพลาด', 'ต้องรอดูอาการที่บ้าน', 'ไม่มีทางรักษาเพิ่ม'],
+      tip:'การเปลี่ยนแผนเป็นผ่าตัดเป็นส่วนหนึ่งของการดูแลอย่างปลอดภัย ไม่ใช่ความผิดพลาด', ch:2 },
+    { id:'n4', e:'⏳', q:'ตับหรือม้ามฉีกขาดที่ไม่ได้ผ่าตัด ควรงดกีฬาปะทะและกิจกรรมหนักนานประมาณเท่าใด',
+      a:['ประมาณ 2–3 เดือน หรือตามที่แพทย์กำหนด', '1–2 วัน', '1 สัปดาห์', 'ไม่ต้องงด'],
+      tip:'ตับและม้ามต้องใช้เวลาสมานตัวหลายสัปดาห์ถึงหลายเดือน', ch:4 }
+  ],
+  organs: {
+    liver: { name:'ตับ', care:'liver', q:[
+      { id:'L1', e:'🟤', q:'บาดเจ็บที่ตับ อาการใดต้องรีบกลับโรงพยาบาล',
+        a:['ตัวเหลือง ตาเหลือง ปัสสาวะสีเข้มคล้ายน้ำชา', 'หิวบ่อยขึ้น', 'นอนหลับได้ดี', 'ผิวแห้งเล็กน้อย'],
+        tip:'ตัวเหลือง ตาเหลือง อาจหมายถึงตับหรือท่อน้ำดีมีปัญหา' },
+      { id:'L2', e:'🍺', q:'ระหว่างที่ตับยังฟื้นตัว ควรงดสิ่งใด',
+        a:['แอลกอฮอล์ ยาสมุนไพร และอาหารเสริมที่ไม่ได้ปรึกษาแพทย์', 'ผักและผลไม้', 'น้ำเปล่า', 'อาหารโปรตีน'],
+        tip:'แอลกอฮอล์และสมุนไพรบางชนิดทำให้ตับทำงานหนักขึ้น' } ] },
+    spleen: { name:'ม้าม', care:'spleen', q:[
+      { id:'P1', e:'🌡️', q:'ผู้ที่ผ่าตัดเอาม้ามออก ถ้ามีไข้ 38 องศาขึ้นไปควรทำอย่างไร',
+        a:['ไปโรงพยาบาลทันที', 'กินยาลดไข้แล้วรอดูอาการ 3 วัน', 'อาบน้ำเย็นแล้วนอนพัก', 'ไม่ต้องทำอะไร'],
+        tip:'คนที่ไม่มีม้ามติดเชื้อรุนแรงได้เร็ว ไข้จึงเป็นเรื่องด่วน' },
+      { id:'P2', e:'💉', q:'ผู้ที่ไม่มีม้ามควรได้รับวัคซีนใด',
+        a:['ปอดอักเสบ ไข้กาฬหลังแอ่น Hib และไข้หวัดใหญ่ทุกปี', 'ไม่ต้องฉีดวัคซีนใด ๆ', 'วัคซีนบาดทะยักอย่างเดียว', 'ฉีดเฉพาะเมื่อป่วย'],
+        tip:'วัคซีนช่วยป้องกันเชื้อที่อันตรายมากสำหรับคนที่ไม่มีม้าม' } ] },
+    stomach: { name:'กระเพาะ / ลำไส้เล็ก', care:'stomach', q:[
+      { id:'T1', e:'🥣', q:'หลังผ่าตัดกระเพาะหรือลำไส้เล็ก ควรกินอาหารอย่างไร',
+        a:['กินทีละน้อย วันละ 5–6 มื้อ เคี้ยวละเอียด', 'กินมื้อเดียวให้อิ่มมาก ๆ', 'กินอาหารเผ็ดจัดทันที', 'งดอาหารทุกอย่าง 1 สัปดาห์'],
+        tip:'กินทีละน้อยช่วยให้ลำไส้ไม่ทำงานหนักเกินไป และลดท้องอืด' },
+      { id:'T2', e:'⚫', q:'อาการใดของกระเพาะหรือลำไส้เล็กที่ต้องรีบมาโรงพยาบาล',
+        a:['อาเจียนเป็นเลือด หรืออุจจาระสีดำ', 'ผายลมได้', 'อยากอาหารมากขึ้น', 'ถ่ายอุจจาระสีเหลืองปกติ'],
+        tip:'อาเจียนเป็นเลือดหรืออุจจาระดำ อาจเป็นเลือดออกในทางเดินอาหาร' } ] },
+    colon: { name:'ลำไส้ใหญ่ / ทวารเทียม', care:'colon', q:[
+      { id:'C1', e:'🟠', q:'ควรเทถุงทวารเทียมเมื่อใด',
+        a:['เมื่อมีของเสียประมาณ 1 ใน 3 ถึงครึ่งถุง', 'เมื่อถุงเต็มจนตึง', 'วันละครั้งตอนเช้าเท่านั้น', 'สัปดาห์ละครั้ง'],
+        tip:'เทก่อนถุงหนักเกินไป ช่วยไม่ให้แป้นหลุดและรั่ว' },
+      { id:'C2', e:'🎨', q:'ทวารเทียมปกติควรมีลักษณะอย่างไร',
+        a:['สีชมพูแดง ชุ่มชื้น', 'สีม่วงคล้ำหรือดำ', 'ซีดขาวและแห้ง', 'ยุบลงไปในผิวหนัง'],
+        tip:'ถ้าทวารเทียมเป็นสีม่วงคล้ำ ดำ หรือยุบลง ต้องรีบมาโรงพยาบาล' } ] },
+    pancreas: { name:'ตับอ่อน', care:'pancreas', q:[
+      { id:'A1', e:'🟡', q:'ผู้ที่บาดเจ็บตับอ่อน ต้องงดสิ่งใดเด็ดขาด',
+        a:['แอลกอฮอล์', 'น้ำเปล่า', 'ผักต้ม', 'ข้าวต้ม'],
+        tip:'แอลกอฮอล์กระตุ้นให้ตับอ่อนอักเสบซ้ำได้' },
+      { id:'A2', e:'⚠️', q:'อาการใดของตับอ่อนที่ต้องรีบมาโรงพยาบาล',
+        a:['ปวดท้องส่วนบนรุนแรงร้าวไปหลัง คลื่นไส้ อาเจียน', 'ง่วงนอนหลังอาหาร', 'ผายลมบ่อย', 'คันผิวหนังเล็กน้อย'],
+        tip:'ปวดท้องบนร้าวไปหลังร่วมกับอาเจียน อาจเป็นตับอ่อนอักเสบ' } ] },
+    kidney: { name:'ไต', care:'kidney', q:[
+      { id:'K1', e:'🩸', q:'บาดเจ็บที่ไต อาการใดต้องรีบกลับโรงพยาบาล',
+        a:['ปัสสาวะเป็นเลือดมากขึ้น มีลิ่มเลือด หรือปัสสาวะไม่ออก', 'ปัสสาวะสีเหลืองใส', 'ดื่มน้ำแล้วปัสสาวะบ่อยขึ้น', 'ปวดเมื่อยขาเล็กน้อย'],
+        tip:'เลือดในปัสสาวะที่มากขึ้นอาจหมายถึงไตยังมีเลือดออก' },
+      { id:'K2', e:'🩺', q:'หลังบาดเจ็บที่ไต ควรตรวจติดตามสิ่งใดตามนัด',
+        a:['วัดความดันโลหิต', 'วัดสายตา', 'ตรวจฟัน', 'ไม่ต้องตรวจอะไร'],
+        tip:'บางรายความดันโลหิตสูงขึ้นภายหลังการบาดเจ็บที่ไต' } ] },
+    bladder: { name:'กระเพาะปัสสาวะ', care:'bladder', q:[
+      { id:'B1', e:'💛', q:'ถ้ากลับบ้านพร้อมสายสวนปัสสาวะ ควรวางถุงปัสสาวะไว้ที่ใด',
+        a:['ต่ำกว่าระดับเอวเสมอ', 'สูงกว่าระดับหน้าอก', 'วางบนท้อง', 'วางที่ไหนก็ได้'],
+        tip:'ถุงต่ำกว่าเอวทำให้ปัสสาวะไม่ไหลย้อนกลับ ลดการติดเชื้อ' },
+      { id:'B2', e:'🚫', q:'ถ้าสายสวนปัสสาวะหลุด ควรทำอย่างไร',
+        a:['รีบกลับโรงพยาบาล ห้ามใส่สายเอง', 'ใส่สายกลับเข้าไปเอง', 'ปล่อยไว้ไม่ต้องทำอะไร', 'รอถึงวันนัดครั้งหน้า'],
+        tip:'บางรายจำเป็นต้องมีสายไว้ให้แผลกระเพาะปัสสาวะหาย การใส่เองอาจทำให้บาดเจ็บ' } ] }
+  }
+};
+const QZ_ORG_ORDER = ['liver','spleen','stomach','colon','pancreas','kidney','bladder'];
+
+var QZ = null;
+function qzShuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function qzEl() { return document.getElementById('qzBody'); }
+function qzSave(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function qzLoad(k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
+
+function openQuiz() {
+  if (AU.el) AU.el.pause();
+  if (typeof axStop === 'function') axStop();
+  var rec = qzLoad('abdRecord', {}), prev = qzLoad('abdQuizSetup', {});
+  QZ = { step:'setup', who: prev.who || 'ผู้ป่วย', hn: prev.hn || '', treat: prev.treat || rec.treat || '', organs: prev.organs || [] };
+  document.getElementById('qzOv').classList.add('show');
+  document.body.classList.add('pv-max-open');
+  qzSetup();
+}
+function closeQuiz() {
+  document.getElementById('qzOv').classList.remove('show');
+  document.body.classList.remove('pv-max-open');
+  QZ = null;
+}
+
+// ── ขั้นที่ 1: เลือกการรักษาและอวัยวะ ──
+function qzSetup() {
+  var chip = function (on, txt, fn) { return '<button class="qz-chip' + (on ? ' on' : '') + '" onclick="' + fn + '">' + txt + '</button>'; };
+  qzEl().innerHTML =
+    '<div class="qz-hero"><div class="qz-hero-ic">🧠</div><h2>แบบทดสอบความรู้</h2>' +
+      '<p>ตอบคำถามสั้น ๆ ประมาณ 10 ข้อ เพื่อดูว่าพร้อมดูแลตัวเองแค่ไหน<br>ตอบผิดไม่เป็นไร จะมีคำอธิบายให้ทุกข้อ</p></div>' +
+    '<div class="qz-card"><h3>1. ผู้ตอบ</h3><div class="qz-chips">' +
+      ['ผู้ป่วย','ญาติ / ผู้ดูแล'].map(function (w) { return chip(QZ.who === w, w, "qzSet('who','" + w + "')"); }).join('') + '</div>' +
+      '<label class="qz-lbl">HN หรือเลขเตียง <small>(ไม่ต้องใส่ชื่อจริง · ไม่บังคับ)</small>' +
+      '<input id="qzHn" type="text" inputmode="text" maxlength="20" autocomplete="off" value="' + esc(QZ.hn) + '" placeholder="เช่น 6712345 หรือ เตียง 8"></label></div>' +
+    '<div class="qz-card"><h3>2. การรักษาที่ได้รับ</h3><div class="qz-chips">' +
+      chip(QZ.treat === 'op', '🔪 ผ่าตัด', "qzSet('treat','op')") +
+      chip(QZ.treat === 'nonop', '🛏️ ไม่ผ่าตัด', "qzSet('treat','nonop')") +
+      chip(QZ.treat === 'unsure', '❓ ไม่แน่ใจ', "qzSet('treat','unsure')") + '</div></div>' +
+    '<div class="qz-card"><h3>3. อวัยวะที่บาดเจ็บ <small>(เลือกได้หลายข้อ)</small></h3><div class="qz-chips">' +
+      QZ_ORG_ORDER.map(function (k) { return chip(QZ.organs.indexOf(k) > -1, QUIZ_BANK.organs[k].name, "qzOrg('" + k + "')"); }).join('') +
+      chip(QZ.organs.indexOf('unsure') > -1, 'ไม่แน่ใจ', "qzOrg('unsure')") + '</div></div>' +
+    '<p class="qz-consent">เมื่อกดเริ่ม ผลคะแนนจะถูกบันทึกให้ทีมพยาบาลใช้ติดตามและให้คำแนะนำเพิ่มเติม</p>' +
+    '<button class="btn btn-brand qz-go" onclick="qzStart()"' + (QZ.treat ? '' : ' disabled') + '>เริ่มทำแบบทดสอบ ›</button>';
+}
+function qzKeepHn() { var i = document.getElementById('qzHn'); if (i) QZ.hn = i.value.trim().slice(0, 20); }
+function qzSet(k, v) { qzKeepHn(); QZ[k] = v; qzSetup(); }
+function qzOrg(k) {
+  qzKeepHn();
+  if (k === 'unsure') QZ.organs = QZ.organs.indexOf('unsure') > -1 ? [] : ['unsure'];
+  else {
+    QZ.organs = QZ.organs.filter(function (x) { return x !== 'unsure'; });
+    var i = QZ.organs.indexOf(k); if (i > -1) QZ.organs.splice(i, 1); else QZ.organs.push(k);
+  }
+  qzSetup();
+}
+
+// ── ขั้นที่ 2: สร้างชุดคำถาม ──
+function qzStart() {
+  qzKeepHn();
+  if (!QZ.treat) return;
+  qzSave('abdQuizSetup', { who:QZ.who, hn:QZ.hn, treat:QZ.treat, organs:QZ.organs });
+  var B = QUIZ_BANK, qs = [];
+  var orgs = QZ.organs.filter(function (k) { return B.organs[k]; });
+  // ทั่วไป: ถ้าเลือกอวัยวะหลายอย่าง ใช้คำถามทั่วไปน้อยลง เพื่อไม่ให้ยาวเกิน
+  var nGen = orgs.length >= 3 ? 3 : orgs.length === 2 ? 4 : 5;
+  var gen = ['g1'].concat(qzShuffle(['g2','g3','g4','g5','g6']).slice(0, nGen - 1));
+  gen.forEach(function (id) { qs.push(B.general.filter(function (x) { return x.id === id; })[0]); });
+  if (QZ.treat === 'op') qzShuffle(B.op).slice(0, 3).forEach(function (q) { qs.push(q); });
+  else if (QZ.treat === 'nonop') qzShuffle(B.nonop).slice(0, 3).forEach(function (q) { qs.push(q); });
+  else { qs.push(qzShuffle(B.op)[0]); qs.push(qzShuffle(B.nonop)[0]); }
+  orgs.forEach(function (k) { B.organs[k].q.forEach(function (q) { qs.push(Object.assign({ org:k }, q)); }); });
+  if (!orgs.length) qs.push(B.general.filter(function (x) { return gen.indexOf(x.id) < 0; })[0]);
+  QZ.qs = qs.map(function (q) {
+    var opts = qzShuffle(q.a.map(function (t, i) { return { t:t, ok:i === 0 }; }));
+    return Object.assign({}, q, { opts:opts });
+  });
+  QZ.i = 0; QZ.ans = []; QZ.streak = 0; QZ.best = 0; QZ.t0 = Date.now();
+  qzQuestion();
+}
+
+// ── ขั้นที่ 3: ทีละข้อ ──
+function qzQuestion() {
+  var q = QZ.qs[QZ.i], n = QZ.qs.length;
+  var org = q.org ? '<span class="qz-tag">' + QUIZ_BANK.organs[q.org].name + '</span>' : '';
+  qzEl().innerHTML =
+    '<div class="qz-prog"><div class="qz-prog-bar"><i style="width:' + (QZ.i / n * 100) + '%"></i></div>' +
+      '<span>ข้อ ' + (QZ.i + 1) + '/' + n + '</span>' + (QZ.streak >= 2 ? '<span class="qz-streak">🔥 ' + QZ.streak + '</span>' : '') + '</div>' +
+    '<div class="qz-q"><div class="qz-q-ic">' + q.e + '</div>' + org + '<h3>' + q.q + '</h3></div>' +
+    '<div class="qz-opts">' + q.opts.map(function (o, j) {
+      return '<button class="qz-opt" onclick="qzPick(' + j + ')"><b>' + 'กขคง'.charAt(j) + '</b><span>' + o.t + '</span></button>';
+    }).join('') + '</div><div id="qzFb"></div>';
+}
+function qzPick(j) {
+  var q = QZ.qs[QZ.i]; if (QZ.ans[QZ.i] != null) return;
+  var ok = q.opts[j].ok;
+  QZ.ans[QZ.i] = { id:q.id, ok:ok, pick:q.opts[j].t };
+  QZ.streak = ok ? QZ.streak + 1 : 0; QZ.best = Math.max(QZ.best, QZ.streak);
+  document.querySelectorAll('.qz-opt').forEach(function (b, k) {
+    b.disabled = true;
+    if (q.opts[k].ok) b.classList.add('right');
+    else if (k === j) b.classList.add('wrong');
+  });
+  if (navigator.vibrate) try { navigator.vibrate(ok ? 30 : [60, 40, 60]); } catch (e) {}
+  var praise = ['เยี่ยมมาก!', 'ถูกต้อง!', 'เก่งมาก!', 'ใช่เลย!'];
+  document.getElementById('qzFb').innerHTML =
+    '<div class="qz-fb ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '✅ ' + praise[QZ.i % praise.length] : '💡 คำตอบที่ถูกคือ “' + q.a[0] + '”') + '</b>' +
+    '<p>' + q.tip + '</p></div>' +
+    '<button class="btn btn-brand qz-go" onclick="qzNext()">' + (QZ.i + 1 < QZ.qs.length ? 'ข้อถัดไป ›' : 'ดูผลคะแนน 🎉') + '</button>';
+  setTimeout(function () { var f = document.getElementById('qzFb'); if (f) f.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 60);
+}
+function qzNext() {
+  QZ.i++;
+  if (QZ.i < QZ.qs.length) { qzQuestion(); document.getElementById('qzOv').scrollTop = 0; }
+  else qzResult();
+}
+
+// ── ขั้นที่ 4: ผลคะแนน + คำแนะนำ ──
+function qzLevel(p) {
+  if (p >= 80) return { k:'ดีมาก', ic:'🏆', c:'ok', msg:'พร้อมดูแลตัวเองที่บ้าน ทำตามคำแนะนำต่อไป และไปตามนัดทุกครั้ง' };
+  if (p >= 60) return { k:'พอใช้', ic:'👍', c:'mid', msg:'เข้าใจเกือบครบแล้ว ลองทบทวนหัวข้อด้านล่างอีกครั้ง แล้วทำแบบทดสอบใหม่' };
+  return { k:'ควรทบทวน', ic:'📖', c:'low', msg:'ไม่เป็นไร ค่อย ๆ อ่านทบทวนหัวข้อด้านล่าง หรือถามพยาบาลได้เลย แล้วลองทำใหม่อีกครั้ง' };
+}
+function qzResult() {
+  var n = QZ.qs.length, sc = QZ.ans.filter(function (a) { return a.ok; }).length, p = Math.round(sc / n * 100), L = qzLevel(p);
+  var wrong = QZ.qs.filter(function (q, i) { return !QZ.ans[i].ok; });
+  var attempts = qzLoad('abdQuizHist', []);
+  var rec = { ts:new Date().toISOString(), who:QZ.who, hn:QZ.hn, treat:{ op:'ผ่าตัด', nonop:'ไม่ผ่าตัด', unsure:'ไม่แน่ใจ' }[QZ.treat],
+    organs:QZ.organs.map(function (k) { return k === 'unsure' ? 'ไม่แน่ใจ' : QUIZ_BANK.organs[k].name; }).join(', ') || '-',
+    score:sc, total:n, pct:p, level:L.k, wrong:wrong.map(function (q) { return q.id + ' ' + q.q; }).join(' | ') || '-',
+    secs:Math.round((Date.now() - QZ.t0) / 1000), attempt:attempts.length + 1, ua:navigator.userAgent.slice(0, 120) };
+  attempts.push({ ts:rec.ts, pct:p }); qzSave('abdQuizHist', attempts.slice(-20));
+  var prev = attempts.length > 1 ? attempts[attempts.length - 2].pct : null;
+
+  // คำแนะนำ: หัวข้อที่ควรอ่านซ้ำ (ไม่ซ้ำกัน)
+  var tips = [], seen = {};
+  wrong.forEach(function (q) {
+    var key = q.org ? 'care-' + q.org : 'ch' + q.ch; if (seen[key]) return; seen[key] = 1;
+    tips.push(q.org
+      ? '<button class="qz-rev" onclick="closeQuiz();goCare(\'' + QUIZ_BANK.organs[q.org].care + '\')">📖 การดูแล' + QUIZ_BANK.organs[q.org].name + ' <small>ส่วนที่ 4</small></button>'
+      : '<button class="qz-rev" onclick="closeQuiz();go(' + q.ch + ')">📖 ' + CHAPTERS[q.ch].title + ' <small>ส่วนที่ ' + q.ch + '</small></button>');
+  });
+  var C = 2 * Math.PI * 52;
+  qzEl().innerHTML =
+    '<div class="qz-res ' + L.c + '">' +
+      '<div class="qz-ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" style="stroke-dasharray:' + C + ';stroke-dashoffset:' + C + '" data-to="' + (C * (1 - p / 100)) + '"/></svg>' +
+        '<div><b>' + sc + '/' + n + '</b><span>' + p + '%</span></div></div>' +
+      '<div class="qz-badge">' + L.ic + ' ' + L.k + '</div>' +
+      '<p>' + L.msg + '</p>' +
+      (prev != null ? '<p class="qz-cmp">' + (p > prev ? '📈 ดีขึ้นจากครั้งก่อน (' + prev + '%)' : p === prev ? 'เท่ากับครั้งก่อน (' + prev + '%)' : 'ครั้งก่อนได้ ' + prev + '%') + '</p>' : '') +
+      (QZ.best >= 3 ? '<p class="qz-cmp">🔥 ตอบถูกติดกัน ' + QZ.best + ' ข้อ</p>' : '') +
+    '</div>' +
+    (wrong.length ? '<div class="qz-card"><h3>ข้อที่ควรจำ</h3><ul class="qz-wrong">' + wrong.map(function (q) {
+        return '<li><b>' + q.q + '</b><span>✅ ' + q.a[0] + '</span><small>' + q.tip + '</small></li>'; }).join('') + '</ul>' +
+      '<h3 style="margin-top:14px;">อ่านทบทวน</h3><div class="qz-revs">' + tips.join('') + '</div></div>'
+      : '<div class="qz-card qz-perfect">🌟 ตอบถูกทุกข้อ ยอดเยี่ยมมาก!</div>') +
+    '<div class="qz-card qz-remind"><h3>🚨 จำไว้เสมอ</h3><p>ปวดท้องมากขึ้น ท้องแข็ง หน้ามืด มีไข้สูง หรือแผลบวมแดงมีหนอง ให้กลับโรงพยาบาลหรือโทร <a href="tel:1669">1669</a> ทันที</p></div>' +
+    '<div class="qz-save" id="qzSave">' + (QUIZ_API ? '⏳ กำลังบันทึกผล…' : '') + '</div>' +
+    '<div class="qz-actions"><button class="btn btn-ghost" onclick="openQuiz()">🔁 ทำใหม่</button><button class="btn btn-brand" onclick="closeQuiz()">กลับไปอ่านคู่มือ</button></div>';
+  document.getElementById('qzOv').scrollTop = 0;
+  setTimeout(function () { var c = document.querySelector('.qz-ring .fg'); if (c) c.style.strokeDashoffset = c.dataset.to; }, 80);
+  if (p >= 80) qzConfetti();
+  qzSend(rec);
+}
+
+// ── ส่งผลไป Google Sheet (มีคิวสำรองถ้าเน็ตหลุด) ──
+function qzPost(rec) {
+  return fetch(QUIZ_API, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify(rec) });
+}
+function qzSend(rec) {
+  if (!QUIZ_API) return;
+  var box = function (t) { var b = document.getElementById('qzSave'); if (b) b.innerHTML = t; };
+  qzPost(rec).then(function () { box('✅ บันทึกผลเรียบร้อย'); })
+    .catch(function () {
+      var q = qzLoad('abdQuizQueue', []); q.push(rec); qzSave('abdQuizQueue', q.slice(-30));
+      box('📶 ยังส่งผลไม่ได้ จะส่งให้อัตโนมัติเมื่อมีอินเทอร์เน็ต');
+    });
+}
+function qzFlush() {
+  if (!QUIZ_API || !navigator.onLine) return;
+  var q = qzLoad('abdQuizQueue', []); if (!q.length) return;
+  qzSave('abdQuizQueue', []);
+  q.forEach(function (rec) { qzPost(rec).catch(function () { var r = qzLoad('abdQuizQueue', []); r.push(rec); qzSave('abdQuizQueue', r); }); });
+}
+window.addEventListener('online', qzFlush);
+setTimeout(qzFlush, 3000);
+
+function qzConfetti() {
+  var box = document.createElement('div'); box.className = 'qz-confetti';
+  var cols = ['#3FD6CC', '#F4C760', '#FF6E6E', '#7C9CFF', '#6EE0A6'];
+  for (var i = 0; i < 60; i++) {
+    var s = document.createElement('i');
+    s.style.left = Math.random() * 100 + '%'; s.style.background = cols[i % cols.length];
+    s.style.animationDelay = Math.random() * .6 + 's'; s.style.animationDuration = 1.6 + Math.random() * 1.4 + 's';
+    s.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    box.appendChild(s);
+  }
+  document.getElementById('qzOv').appendChild(box);
+  setTimeout(function () { box.remove(); }, 3500);
+}
+
 (function autoUpdate() {
   if (!/^https?:/.test(location.protocol) || !window.fetch) return;
   try { if (Date.now() - (+sessionStorage.getItem('abdReload') || 0) < 60000) return; } catch (e) {}
