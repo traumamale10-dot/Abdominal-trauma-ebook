@@ -376,6 +376,15 @@ html, body { overflow-x:hidden; }
 .ax-quad-btn.on { background:#F4C760; color:#1A1200; border-color:#F4C760; }
 .ax-img { position:relative; width:100%; border-radius:16px; overflow:hidden; background:#081626; user-select:none; -webkit-user-select:none; }
 .ax-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+.ax-3d-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:48px; margin-top:8px; border-radius:14px; border:1px solid rgba(63,214,204,.6); background:linear-gradient(90deg,rgba(63,214,204,.18),rgba(120,160,255,.18)); color:#E8FBFF; font:inherit; font-weight:700; cursor:pointer; box-shadow:0 0 16px rgba(63,214,204,.25); }
+.ax-3d-btn small { font-weight:400; color:#9FC0D8; font-size:.8rem; }
+#ax3d { position:fixed; inset:0; z-index:121; background:#000; display:none; flex-direction:column; height:100vh; height:100dvh; padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+#ax3d.show { display:flex; }
+#ax3d .pvo-bar span { color:#fff; font-weight:600; }
+.ax3d-new { padding:9px 14px; border-radius:20px; background:rgba(255,255,255,.15); color:#fff; font-weight:700; text-decoration:none; white-space:nowrap; }
+.ax3d-hint { color:#BFD4E4; font-size:.8rem; text-align:center; padding:0 12px 8px; line-height:1.5; }
+.ax3d-stage { flex:1; min-height:0; position:relative; }
+.ax3d-stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; }
 .ax-hint { color:#9FC0D8; font-size:.78rem; text-align:center; margin-top:6px; }
 .ax-dot { position:absolute; width:44px; height:44px; margin:-22px 0 0 -22px; border:none; background:transparent; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; z-index:2; }
 .ax-dot span { width:20px; height:20px; border-radius:50%; background:var(--c); border:3px solid #fff; animation:axPulse 2.4s ease-out infinite; transition:transform .2s; }
@@ -518,6 +527,11 @@ html, body { overflow-x:hidden; }
   <div class="ref-scroll"></div>
 </div>
 
+<div id="ax3d" role="dialog" aria-label="กายวิภาค 3 มิติ">
+  <div class="pvo-bar"><span>🧬 3 มิติ</span><div style="display:flex;gap:8px;flex-shrink:0;"><a class="ax3d-new" id="ax3dNew" href="#" target="_blank" rel="noopener">↗ เปิดหน้าใหม่</a><button onclick="close3D()" style="white-space:nowrap">✕ ปิด</button></div></div>
+  <div class="ax3d-hint">ใช้นิ้วลากเพื่อหมุน · ถ่างสองนิ้วเพื่อซูม · แตะอวัยวะเพื่อดูชื่อ<br>ถ้าภาพไม่ขึ้น กด <b>↗ เปิดหน้าใหม่</b></div>
+  <div class="ax3d-stage" id="ax3dFrame"></div>
+</div>
 <div id="pv-overlay" role="dialog" aria-label="วิดีโอเต็มจอ">
   <div class="pvo-bar"><span id="pvoTitle">🎬 คลิปวิดีโอ</span><button onclick="pvCloseMax()">✕ ปิด</button></div>
   <div class="pvo-stage"><div class="pvo-frame" id="pvoFrame"></div></div>
@@ -761,6 +775,24 @@ const VIEWS = {
 };
 var EXP = {};   // สถานะของแต่ละกล่อง { view, sel, quad }
 
+// ══════════════════════════════════════════════════════
+// กายวิภาค 3 มิติ (BioDigital Human) — เปลี่ยนลิงก์ได้ที่นี่ ถ้าไม่ใช้ให้ใส่ ''
+// ══════════════════════════════════════════════════════
+const ANATOMY_3D = 'https://human.biodigital.com/view?id=7Wal&lang=en&ref=share';
+function open3D() {
+  if (AU.el) AU.el.pause();
+  if (typeof axStop === 'function') axStop();
+  var f = document.getElementById('ax3dFrame');
+  f.innerHTML = '<iframe src="' + esc(ANATOMY_3D) + '" title="กายวิภาคช่องท้อง 3 มิติ" allow="fullscreen; xr-spatial-tracking" allowfullscreen></iframe>';
+  document.getElementById('ax3dNew').href = ANATOMY_3D;
+  document.getElementById('ax3d').classList.add('show');
+  document.body.classList.add('pv-max-open');
+}
+function close3D() {
+  document.getElementById('ax3d').classList.remove('show');
+  document.getElementById('ax3dFrame').innerHTML = '';
+  document.body.classList.remove('pv-max-open');
+}
 function explorerHTML(uid, opts) {
   opts = opts || {};
   EXP[uid] = { view:'front', sel:null, quad:false, compact:!!opts.compact };
@@ -773,6 +805,7 @@ function explorerHTML(uid, opts) {
         '<button class="ax-quad-btn" onclick="axQuad(\'' + uid + '\')" aria-pressed="false">✚ แบ่ง 4 ส่วน</button>' +
       '</div>' +
       '<div class="ax-pic"></div>' +
+      (ANATOMY_3D ? '<button class="ax-3d-btn" onclick="open3D()">🧬 ดูแบบ 3 มิติ <small>หมุน · ซูม ได้</small></button>' : '') +
     '</div>' +
     '<div class="ax-side">' +
       '<div class="ax-chips">' + ORGANS.map(function (o) {
@@ -1334,7 +1367,7 @@ function pvCloseMax() {
   document.getElementById('pvoFrame').innerHTML = '';   // หยุดวิดีโอ
   document.body.classList.remove('pv-max-open');
 }
-document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('pv-max-open')) pvCloseMax(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('pv-max-open')) { pvCloseMax(); close3D(); } });
 // ปรับกรอบให้ตรงกับสัดส่วนคลิปจริง (คลิปแนวตั้งจะไม่ถูกตัด)
 function pvFit(v) {
   if (!v.videoWidth || !v.videoHeight) return;
@@ -1355,6 +1388,7 @@ function pvFull(btn) {
 }
 // เปลี่ยนบท → ปิดวิดีโอ และแสดง/ซ่อนปุ่ม 🎬
 function vidOnChapter() {
+  if (document.getElementById('ax3d').classList.contains('show')) close3D();
   if (document.body.classList.contains('pv-max-open')) pvCloseMax();
   var b = document.getElementById('vidBtn'); if (b) b.classList.toggle('has-video', vidList(cur).length > 0);
 }
@@ -1447,7 +1481,7 @@ function auToggleAuto() { AU.auto = !AU.auto; try { localStorage.setItem('abdAuA
 // ปัดซ้าย/ขวาเพื่อเปลี่ยนบท (นิ้วเดียว แนวนอนชัดเจน ไม่นับการซูม)
 // ══════════════════════════════════════════════════════
 var SW = { x:0, y:0, t:0, ok:false };
-function uiOpen() { return !!document.querySelector('.drawer.show, .sheet.show, .modal.show, #pv-overlay.show, #refOverlay.show'); }
+function uiOpen() { return !!document.querySelector('.drawer.show, .sheet.show, .modal.show, #pv-overlay.show, #ax3d.show, #refOverlay.show'); }
 document.addEventListener('touchstart', function (e) {
   if (e.touches.length > 1) { SW.ok = false; return; }
   var t = e.target;
